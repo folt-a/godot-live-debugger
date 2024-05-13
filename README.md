@@ -24,7 +24,7 @@ You can check variables such as game progress without interfering with operation
 
 操作を妨げずにゲーム進行などの変数を確認できます。
 
-(https://x.com/Faultun/status/1790061378310385668)[https://x.com/Faultun/status/1790061378310385668]
+[https://x.com/Faultun/status/1790061378310385668](https://x.com/Faultun/status/1790061378310385668)
 
 ```gdscript
 
