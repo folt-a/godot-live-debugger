@@ -35,7 +35,8 @@ var property_1:int = 300
 #---
 
 # 関数を指定することもできます。_processで毎フレーム呼び出されるので注意。
-# You can also specify a function. Note that _process is called every frame.
+# You can also specify a function.
+# Note that _process is called every frame.
 
 #@Debug
 func get_str():
@@ -77,12 +78,14 @@ var property_4:Vector3 = Vector3.ZERO
 #---
 
 # プロパティ名指定で別のノードのプロパティを指定することもできます。ただし監視のみで編集不可能です。
-# You can also specify the property of another node by specifying the property name. However, it can only be monitored and cannot be edited.
+# You can also specify the property of another node by specifying the property name.
+# However, it can only be monitored and cannot be edited.
 
 #@Debug[./ChildNode:position]
 
 # 内部処理では:の前までをget_node()しているので%も使用できます。
-# In internal processing, get_node() is performed up to the point before :, so % can also be used.
+# In internal processing, get_node() is performed up to the point before :,
+# so % can also be used.
 
 #@Debug[%ChildNode:position]
 
@@ -111,8 +114,10 @@ var property_8:bool = false
 
 # #@Debugではなく #@Call で関数を指定すると、ボタンが表示され、押すとその関数を実行します。監視対象にはしません。
 # 関数のreturnの結果が値に表示されます。　引数1を値に入力して実行することもできます。
-# If you specify a function with #@Call instead of #@Debug, a button will appear and, when pressed, execute that function. It will not be monitored.
-# The result of the function return is displayed in the value. You can also execute it by entering argument 1 as the value.
+# If you specify a function with #@Call instead of #@Debug, a button will appear and,
+# when pressed, execute that function. It will not be monitored.
+# The result of the function return is displayed in the value.
+# You can also execute it by entering argument 1 as the value.
 
 #@Call
 func play() -> String:
