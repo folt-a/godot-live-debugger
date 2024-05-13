@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://brm5hjhha214j" path="res://icon.svg" id="1_4008y"]
 [ext_resource type="Script" path="res://example/example.gd" id="1_h25ts"]
-[ext_resource type="Script" path="res://example/player.gd" id="2_nd4ap"]
+[ext_resource type="Script" path="res://example/player_ja.gd" id="2_07ryf"]
 [ext_resource type="Script" path="res://example/stage_object.gd" id="4_k5685"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0roy0"]
@@ -17,7 +17,7 @@ script = ExtResource("1_h25ts")
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="."]
 position = Vector2(288, 340)
-script = ExtResource("2_nd4ap")
+script = ExtResource("2_07ryf")
 
 [node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
 texture = ExtResource("1_4008y")

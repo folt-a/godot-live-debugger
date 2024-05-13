@@ -7,7 +7,6 @@ extends StaticBody2D
 var image_texture:ImageTexture
 
 #@Debug[position]
-#@Debug[collision_layer]
 
 func _ready():
 	var rect:= collision_shape.shape.get_rect()

@@ -1,23 +1,23 @@
 extends CharacterBody2D
 
-#@Debug[position]
+#@Debug[position]「位置」
 
-#@Debug
+#@Debug「プレイヤーのきほん速度」
 var speed:float = 300.0
 
-#@Debug
+#@Debug「ジャンプ速度」
 var jump_velocity:float = -400.0
 
-#@Debug'Player Gravity!!'
+#@Debug'重力のつよさ'
 var gravity:float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
-#@Debug
-@export var text:String = "Gobot san":
+#@Debug「頭上キャラ名」
+@export var text:String = "ワイや Gobotや":
 	set(v):
 		text = v
 		queue_redraw()
 
-#@Debug
+#@Debug「プレイヤー位置リセット」
 @onready var position_for_reset:Vector2 = global_position
 
 @onready var _default_font:Font = get_tree().root.get_theme_default_font() 

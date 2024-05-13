@@ -19,6 +19,11 @@ const is_output_console_log_initial_value:bool = true
 # ko:항상 최상위에 표시
 # en:Always on top
 const always_on_top_initial_value:bool = true
+# * is_auto_focus_pause
+# ja:LiveDebuggerをフォーカスしたときに自動的にゲームのSceneTreeをpausedにします
+# ko:LiveDebugger에 포커스를 맞추면 자동으로 게임의 SceneTree를 일시 중지합니다
+# en:When LiveDebugger is focused, automatically pause the SceneTree of the game
+const is_auto_focus_pause_initial_value:bool = true
 # * ignore_script_paths
 # ja:無視するスクリプトパス(*でワイルドカード指定可能)
 # ko:무시할 스크립트 경로 (*로 와일드 카드 지정 가능)
@@ -39,6 +44,8 @@ const display_float_decimal_initial_value:int = 2
 # ko:외부 데이터 저장시 자동 업데이트 여부
 # en:Whether to update automatically when saving external data
 const is_update_when_save_external_data_initial_value:bool = true
+# * 
+# ja:
 
 var before_is_add_debugger_to_autoload_singleton:bool
 
@@ -88,6 +95,26 @@ func _enter_tree() -> void:
 			_add_description_prop("godot_live_debugger/" + de + "_always_on_top")
 		ProjectSettings.save()
 	
+	# フォーカス時に自動ポーズ
+	if not ProjectSettings.has_setting("godot_live_debugger/is_auto_focus_pause"):
+		ProjectSettings.set("godot_live_debugger/is_auto_focus_pause", is_auto_focus_pause_initial_value)
+		ProjectSettings.set_initial_value("godot_live_debugger/is_auto_focus_pause", is_auto_focus_pause_initial_value)
+		ProjectSettings.add_property_info({
+		"name": "godot_live_debugger/is_auto_focus_pause",
+		"type": TYPE_BOOL
+		})
+		var description = ""
+		if _is_ja:
+			description = "LiveDebuggerをフォーカスしたときに自動的にゲームのSceneTreeをpausedにします"
+		elif _is_ko:
+			description = "LiveDebugger에 포커스를 맞추면 자동으로 게임의 SceneTree를 일시 중지합니다"
+		
+		if _is_ja or _is_ko:
+			ProjectSettings.set("godot_live_debugger/" + de + "_is_auto_focus_pause", description)
+			ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_is_auto_focus_pause", description)
+			_add_description_prop("godot_live_debugger/" + de + "_is_auto_focus_pause")
+		ProjectSettings.save()
+
 	# コンソールログ
 	if not ProjectSettings.has_setting("godot_live_debugger/is_output_console_log"):
 		ProjectSettings.set("godot_live_debugger/is_output_console_log", is_output_console_log_initial_value)
@@ -149,7 +176,9 @@ func _enter_tree() -> void:
 			ProjectSettings.set("godot_live_debugger/" + de + "_is_add_debugger_to_autoload_singleton", description)
 			ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_is_add_debugger_to_autoload_singleton", description)
 			_add_description_prop("godot_live_debugger/" + de + "_is_add_debugger_to_autoload_singleton")
-		_on_changed_project_settings()
+		
+		add_autoload_singleton("LiveDebugger", NODE_LIVE_DEBUGGER_TSCN_PATH)#initial_value
+		
 		ProjectSettings.save()
 		
 	if not ProjectSettings.has_setting("godot_live_debugger/display_float_decimal"):
@@ -233,6 +262,7 @@ func update():
 	_add_user_dir_icon("MemberMethod")
 	_add_user_dir_icon("Callable")
 	_add_user_dir_icon("Play")
+	
 	_add_user_dir_icon("String")
 	_add_user_dir_icon("StringName")
 	_add_user_dir_icon("float")
@@ -255,6 +285,9 @@ func update():
 	_add_user_dir_icon("GuiVisibilityVisible")
 	_add_user_dir_icon("GuiVisibilityHidden")
 	_add_user_dir_icon("Info")
+	
+	_add_user_dir_icon("Pause")
+	
 
 
 	#バッチ処理で全てのスクリプトを走査する
