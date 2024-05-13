@@ -63,6 +63,28 @@ var _is_ko:bool = false
 
 var icon_textures:Dictionary = {}
 
+# setting list
+var _is_output_console_log:bool
+var _always_on_top:bool
+var _ignore_script_paths:Array[String]
+var _is_add_debugger_to_autoload_singleton:bool
+var _display_float_decimal:int
+var _is_update_when_save_external_data:bool
+
+# ja:このアドオンがコンソールログに出力するか
+const is_output_console_log_initial_value:bool = true
+# ja:常に最前面に表示
+const always_on_top_initial_value:bool = true
+# ja:無視するスクリプトパス(*でワイルドカード指定可能)
+const ignore_script_paths_initial_value:Array = []
+# ja:Autoloadシングルトンに Live Debugger ノードを追加するか
+const is_add_debugger_to_autoload_singleton_initial_value:bool = true
+# ja:floatの表示桁数
+const display_float_decimal_initial_value:int = 2
+# ja:外部データ保存時に自動更新するか
+const is_update_when_save_external_data_initial_value:bool = true
+
+
 #-----------------------------------------------------------
 #11. onready variables
 #-----------------------------------------------------------
@@ -88,6 +110,12 @@ func _init() -> void:
 	for d in _debug_information_lists:
 		if not _debug_path_mapping_dir.has(d.path):
 			_debug_path_mapping_dir[d.path] = d.path
+	_is_output_console_log = ProjectSettings.get_setting("godot_live_debugger/is_output_console_log", is_output_console_log_initial_value)
+	_always_on_top = ProjectSettings.get_setting("godot_live_debugger/always_on_top", always_on_top_initial_value)
+	always_on_top = _always_on_top
+	#_ignore_script_paths = Array(ProjectSettings.get_setting("godot_live_debugger/ignore_script_paths",ignore_script_paths_initial_value),TYPE_STRING,&"",null)
+	#_is_add_debugger_to_autoload_singleton = ProjectSettings.get_setting("godot_live_debugger/is_add_debugger_to_autoload_singleton") as bool
+	_display_float_decimal = ProjectSettings.get_setting("godot_live_debugger/display_float_decimal", display_float_decimal_initial_value)
 
 
 #-----------------------------------------------------------
@@ -96,15 +124,16 @@ func _init() -> void:
 
 func _ready():
 	if ProjectSettings.get_setting("display/window/subwindows/embed_subwindows"):
-		if _is_ja:
-			printerr("[godot-live-debugger]有効にするには、プロジェクト設定の「サブウィンドウを埋め込む」をオフにする必要があります。")
-			printerr("[godot-live-debugger]display/window/subwindows/embed_subwindows")
-		elif _is_ko:
-			printerr("[godot-live-debugger]사용하려면 프로젝트 설정의 '서브 윈도우를 임베드'를 끄어야합니다.")
-			printerr("[godot-live-debugger]display/window/subwindows/embed_subwindows")
-		else:
-			printerr("[godot-live-debugger]To use this, you need to turn off 'Embed Subwindows' in the project settings.")
-			printerr("[godot-live-debugger]display/window/subwindows/embed_subwindows")
+		if _is_output_console_log:
+			if _is_ja:
+				printerr("[godot-live-debugger]有効にするには、プロジェクト設定の「サブウィンドウを埋め込む」をオフにする必要があります。")
+				printerr("[godot-live-debugger]display/window/subwindows/embed_subwindows")
+			elif _is_ko:
+				printerr("[godot-live-debugger]사용하려면 프로젝트 설정의 '서브 윈도우를 임베드'를 끄어야합니다.")
+				printerr("[godot-live-debugger]display/window/subwindows/embed_subwindows")
+			else:
+				printerr("[godot-live-debugger]To use this, you need to turn off 'Embed Subwindows' in the project settings.")
+				printerr("[godot-live-debugger]display/window/subwindows/embed_subwindows")
 		queue_free()
 	
 	list_tree.columns = columns
@@ -190,23 +219,47 @@ func _update_node(n:Node, item:TreeItem):
 		var d:Dictionary = item.get_metadata(1)
 		# 他ノードプロパティの場合はget_pathする
 		if d.has("node_path"):
-			n = n.get_node_or_null(d.node_path)
+			# メタデータにキャッシュして毎フレームget_nodeを避ける 効果あるのか？
+			if not n.has_meta(d.node_path):
+				n.set_meta(d.node_path, n.get_node_or_null(d.node_path))
+			n = n.get_meta(d.node_path)
 			if not n:return
 		if d.has("prop"):
 			
+			# BOOLはチェックボックスなので文字列に変換する必要なし
 			if d.type == TYPE_BOOL:
 				item.set_checked(2, n.get(d.prop))
 				return
+			elif d.type == TYPE_VECTOR2:
+				# Vector2はfloatなので設定の表示桁数に準じる
+				var x_str:String = str(n.get(d.prop).x)
+				x_str = x_str.pad_decimals(_display_float_decimal) if x_str.contains(".") else x_str
+				var y_str:String = str(n.get(d.prop).y)
+				y_str = y_str.pad_decimals(_display_float_decimal) if y_str.contains(".") else y_str
+				item.set_text(2, x_str + ", " + y_str)
+				return
+			elif d.type == TYPE_VECTOR3:
+				# Vector3はfloatなので設定の表示桁数に準じる
+				var x_str:String = str(n.get(d.prop).x)
+				x_str = x_str.pad_decimals(_display_float_decimal) if x_str.contains(".") else x_str
+				var y_str:String = str(n.get(d.prop).y)
+				y_str = y_str.pad_decimals(_display_float_decimal) if y_str.contains(".") else y_str
+				var z_str:String = str(n.get(d.prop).y)
+				z_str = z_str.pad_decimals(_display_float_decimal) if z_str.contains(".") else z_str
+				item.set_text(2, x_str + ", " + y_str + ", " + z_str)
+				return
 			
 			var s:String = str(n.get(d.prop))
-			if d.type == TYPE_VECTOR2\
-			or d.type == TYPE_VECTOR2I\
-			or d.type == TYPE_VECTOR3\
-			or d.type == TYPE_VECTOR3I\
-			:
+			
+			# Floatは設定の表示桁数に準じる
+			if d.type == TYPE_FLOAT:
+				item.set_text(2, s.pad_decimals(_display_float_decimal))
+				return
+			elif d.type == TYPE_VECTOR2I\
+			or d.type == TYPE_VECTOR3I:
 				s = s.substr(1,s.length() - 2)
 				item.set_text(2, s)
-			
+				
 			
 			item.set_text(2, s)
 			#print(n.get(d.prop))
@@ -271,7 +324,6 @@ func _add_list(n:Node):
 		
 		if d.has("prop"):
 			# プロパティ
-			
 			d.prop = StringName(d.prop)
 			if d.display_name == "":
 				item.set_text(1, str(d.prop))

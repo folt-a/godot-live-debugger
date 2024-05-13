@@ -16,6 +16,10 @@ run/main_scene="res://example/example.tscn"
 config/features=PackedStringArray("4.2")
 config/icon="res://icon.svg"
 
+[autoload]
+
+LiveDebugger="*res://addons/godot-live-debugger/node_live_debugger.tscn"
+
 [display]
 
 window/subwindows/embed_subwindows=false

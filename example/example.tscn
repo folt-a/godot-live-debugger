@@ -1,10 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://bhks82dr2ut37"]
+[gd_scene load_steps=7 format=3 uid="uid://bhks82dr2ut37"]
 
 [ext_resource type="Texture2D" uid="uid://brm5hjhha214j" path="res://icon.svg" id="1_4008y"]
 [ext_resource type="Script" path="res://example/example.gd" id="1_h25ts"]
 [ext_resource type="Script" path="res://example/player.gd" id="2_nd4ap"]
 [ext_resource type="Script" path="res://example/stage_object.gd" id="4_k5685"]
-[ext_resource type="PackedScene" uid="uid://de482go4wodb0" path="res://addons/godot-live-debugger/node_live_debugger.tscn" id="5_2gudx"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0roy0"]
 radius = 64.0
@@ -32,5 +31,3 @@ script = ExtResource("4_k5685")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 shape = SubResource("RectangleShape2D_ulkfa")
-
-[node name="LiveDebugger" parent="." instance=ExtResource("5_2gudx")]
