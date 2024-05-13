@@ -1,5 +1,20 @@
 # godot-live-debugger
- godor addon.A high-level debug window for game status.
+
+This is a Godot addon in development.
+これは開発中のGodotアドオンです。
+
+READMEは書きかけです。ProjectSettingsとかまだ書いてない
+README is a work in progress. I haven't written ProjectSettings yet.
+
+A high-level window for debugging game status.
+You can monitor the properties of the nodes you want to view and edit their values.
+You can edit it as the game window updates in real time as you run it.
+You can check variables such as game progress without interfering with operations.
+
+ゲームステータスのデバッグのための高レベルウィンドウです。
+表示したいノードのプロパティを監視したり、値を編集したりできます。
+ゲーム ウィンドウを実行するとリアルタイムで更新されるので、編集できます。
+操作を妨げずにゲーム進行などの変数を確認できます。
 
 ```gdscript
 
