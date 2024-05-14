@@ -15,6 +15,8 @@ var gravity:float = ProjectSettings.get_setting("physics/2d/default_gravity")
 @export var text:String = "ワイや Gobotや":
 	set(v):
 		text = v
+		var p :=AnimationPlayer.new()
+		p.play()
 		queue_redraw()
 
 #@Debug「プレイヤー位置リセット」

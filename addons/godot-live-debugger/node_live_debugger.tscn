@@ -35,8 +35,39 @@ layout_mode = 2
 [node name="PauseToggleButton" type="Button" parent="Control/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+focus_mode = 1
 
 [node name="AutoPauseToggleCheckBox" type="CheckBox" parent="Control/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="FPSLabel" type="Label" parent="Control/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "FPS:"
+vertical_alignment = 1
+
+[node name="FramerateLabel" type="Label" parent="Control/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(28, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "111"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="FPSLabel2" type="Label" parent="Control/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "FPS:"
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 2
+
+[node name="DebuggerEnabledToggleButton" type="Button" parent="Control/VBoxContainer/HBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 
@@ -50,3 +81,4 @@ hide_root = true
 
 [connection signal="pressed" from="Control/VBoxContainer/HBoxContainer/PauseToggleButton" to="." method="_on_pause_toggle_button_pressed"]
 [connection signal="toggled" from="Control/VBoxContainer/HBoxContainer/AutoPauseToggleCheckBox" to="." method="_on_auto_pause_toggle_check_box_toggled"]
+[connection signal="pressed" from="Control/VBoxContainer/HBoxContainer/HBoxContainer/DebuggerEnabledToggleButton" to="." method="_on_debugger_enabled_toggle_button_pressed"]

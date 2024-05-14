@@ -71,18 +71,23 @@ var _is_auto_focus_pause:bool = false
 
 # setting list
 var _is_output_console_log:bool
+var _frame_interval:int
 var _always_on_top:bool
 var _ignore_script_paths:Array[String]
 var _is_add_debugger_to_autoload_singleton:bool
 var _display_float_decimal:int
 var _is_update_when_save_external_data:bool
 
+var _debugger_enabled:bool = true
+
 # ja:このアドオンがコンソールログに出力するか
 const is_output_console_log_initial_value:bool = true
+# ja:フレーム間隔
+const frame_interval_initial_value:int = 1
 # ja:常に最前面に表示
 const always_on_top_initial_value:bool = true
-# ja:
-var is_auto_focus_pause_initial_value:bool = true
+# ja:自動ポーズ
+const is_auto_focus_pause_initial_value:bool = true
 # ja:無視するスクリプトパス(*でワイルドカード指定可能)
 const ignore_script_paths_initial_value:Array = []
 # ja:Autoloadシングルトンに Live Debugger ノードを追加するか
@@ -100,6 +105,8 @@ const is_update_when_save_external_data_initial_value:bool = true
 
 @onready var pause_toggle_button:Button = %PauseToggleButton
 @onready var auto_pause_toggle_check_box:CheckBox = %AutoPauseToggleCheckBox
+@onready var debugger_enabled_toggle_button:Button = %DebuggerEnabledToggleButton
+@onready var framerate_label:Label = %FramerateLabel
 
 #endregion
 #-----------------------------------------------------------
@@ -121,6 +128,7 @@ func _init() -> void:
 		if not _debug_path_mapping_dir.has(d.path):
 			_debug_path_mapping_dir[d.path] = d.path
 	_is_output_console_log = ProjectSettings.get_setting("godot_live_debugger/is_output_console_log", is_output_console_log_initial_value)
+	_frame_interval = ProjectSettings.get_setting("godot_live_debugger/frame_interval", frame_interval_initial_value)
 	_always_on_top = ProjectSettings.get_setting("godot_live_debugger/always_on_top", always_on_top_initial_value)
 	always_on_top = _always_on_top
 	_is_auto_focus_pause = ProjectSettings.get_setting("godot_live_debugger/is_auto_focus_pause", is_auto_focus_pause_initial_value)
@@ -161,6 +169,22 @@ func _ready():
 	pause_toggle_button.add_theme_color_override(&"icon_pressed_color", Color.CORAL)
 	pause_toggle_button.add_theme_color_override(&"icon_focus_color", Color.CORAL)
 	
+	debugger_enabled_toggle_button.icon = _load_icon("Pause")
+	debugger_enabled_toggle_button.add_theme_color_override(&"icon_normal_color", Color.CORAL)
+	debugger_enabled_toggle_button.add_theme_color_override(&"icon_hover_color", Color.CORAL)
+	debugger_enabled_toggle_button.add_theme_color_override(&"icon_hover_pressed_color", Color.CORAL)
+	debugger_enabled_toggle_button.add_theme_color_override(&"icon_pressed_color", Color.CORAL)
+	debugger_enabled_toggle_button.add_theme_color_override(&"icon_focus_color", Color.CORAL)
+	
+	var arrow_tex:=_load_icon("GuiTreeArrowDown")
+	arrow_tex.set_size_override(Vector2(24, 24))
+	
+	var arrow_collapsed_tex:=_load_icon("GuiTreeArrowRight")
+	arrow_collapsed_tex.set_size_override(Vector2(24, 24))
+	
+	list_tree.add_theme_icon_override(&"arrow", arrow_tex)
+	list_tree.add_theme_icon_override(&"arrow_collapsed", arrow_collapsed_tex)
+	
 	list_tree.set_column_expand_ratio(0,Control.SIZE_FILL)
 	list_tree.set_column_expand_ratio(1,Control.SIZE_FILL)
 	list_tree.set_column_expand_ratio(2,Control.SIZE_EXPAND_FILL)
@@ -173,7 +197,10 @@ func _ready():
 		list_tree.set_column_title(1,"プロパティ名/関数名")
 		list_tree.set_column_title(2,"値")
 		
+		pause_toggle_button.text = "ゲーム"
 		pause_toggle_button.tooltip_text = "ポーズ\n(ゲームのSceneTreeをpausedにします)"
+		
+		debugger_enabled_toggle_button.text = "デバッガ"
 		
 		auto_pause_toggle_check_box.text = "自動ポーズ"
 		auto_pause_toggle_check_box.tooltip_text = "LiveDebuggerをフォーカスしたときに\n自動的にゲームのSceneTreeをpausedにします"
@@ -182,7 +209,10 @@ func _ready():
 		list_tree.set_column_title(1,"속성 이름/메서드 이름")
 		list_tree.set_column_title(2,"값")
 		
+		pause_toggle_button.text = "게임"
 		pause_toggle_button.tooltip_text = "일시정지\n(게임의 SceneTree를 일시정지합니다)"
+		
+		debugger_enabled_toggle_button.text = "디버거"
 		
 		
 		auto_pause_toggle_check_box.text = "자동 일시정지"
@@ -192,8 +222,12 @@ func _ready():
 		list_tree.set_column_title(0,"Node Name")
 		list_tree.set_column_title(1,"Property/Function")
 		list_tree.set_column_title(2,"Value")
+		
+		pause_toggle_button.text = "Game"
 
 		pause_toggle_button.tooltip_text = "Pause\n(Pause the SceneTree of the game)"
+		
+		debugger_enabled_toggle_button.text = "Debugger"
 
 		auto_pause_toggle_check_box.text = "Auto Pause"
 		auto_pause_toggle_check_box.tooltip_text = "Automatically pause the SceneTree of the game\nwhen LiveDebugger is focus_entered"
@@ -207,10 +241,12 @@ func _ready():
 	self.focus_entered.connect(_on_focus_entered)
 	self.focus_exited.connect(_on_focus_exited)
 	
+	self.close_requested.connect(_on_close_requested)
+	
 	# 起動時にゲームのウィンドウのフォーカスをとってしまうので
 	# がんばってお返しする
-	var game_window_id:int = tree.root.get_window_id()
 	var count_for_clash:int = 0
+	game_window_id = tree.root.get_window_id()
 	while not DisplayServer.window_is_focused(game_window_id):
 		await tree.process_frame
 		DisplayServer.window_move_to_foreground()
@@ -218,6 +254,10 @@ func _ready():
 		if count_for_clash > 1000:
 			break
 
+func _on_close_requested():
+	queue_free()
+
+var game_window_id:int
 
 func _on_focus_entered():
 	if _is_auto_focus_pause:
@@ -230,11 +270,13 @@ func toggle_main_window_pause():
 	tree.paused = _is_focus_pause
 
 func _on_focus_exited():
+	await tree.process_frame
+	if not DisplayServer.window_is_focused(game_window_id):return
 	if _is_auto_focus_pause:
 		_is_focus_pause = false
 		toggle_main_window_pause()
 
-func _load_icon(icon_name:String) -> Texture2D:
+func _load_icon(icon_name:String) -> ImageTexture:
 	if icon_textures.has(icon_name):return icon_textures[icon_name]
 	var image = Image.load_from_file(OS.get_user_data_dir().path_join(icon_name+".png"))
 	icon_textures[icon_name] = ImageTexture.create_from_image(image)
@@ -260,7 +302,14 @@ func refresh():
 
 func _process(delta: float) -> void:
 	if _is_focus_pause:return
-	update()
+	if not _debugger_enabled: return
+	framerate_label.text = str(Performance.get_monitor(Performance.TIME_FPS))
+	if _frame_interval == 1:
+		update()
+	else:
+		if Engine.get_frames_drawn() % _frame_interval == 0:
+			update()
+
 
 func update() -> void:
 	if !_root_item: return
@@ -786,3 +835,21 @@ func change_pause_toggle_view():
 		pause_toggle_button.add_theme_color_override(&"icon_hover_pressed_color", Color.CORAL)
 		pause_toggle_button.add_theme_color_override(&"icon_pressed_color", Color.CORAL)
 		pause_toggle_button.add_theme_color_override(&"icon_focus_color", Color.CORAL)
+
+
+func _on_debugger_enabled_toggle_button_pressed():
+	_debugger_enabled = not _debugger_enabled
+	if not _debugger_enabled:
+		debugger_enabled_toggle_button.icon = _load_icon("Play")
+		debugger_enabled_toggle_button.add_theme_color_override(&"icon_normal_color", Color.AQUAMARINE)
+		debugger_enabled_toggle_button.add_theme_color_override(&"icon_hover_color", Color.AQUAMARINE)
+		debugger_enabled_toggle_button.add_theme_color_override(&"icon_hover_pressed_color", Color.AQUAMARINE)
+		debugger_enabled_toggle_button.add_theme_color_override(&"icon_pressed_color", Color.AQUAMARINE)
+		debugger_enabled_toggle_button.add_theme_color_override(&"icon_focus_color", Color.AQUAMARINE)
+	else:
+		debugger_enabled_toggle_button.icon = _load_icon("Pause")
+		debugger_enabled_toggle_button.add_theme_color_override(&"icon_normal_color", Color.CORAL)
+		debugger_enabled_toggle_button.add_theme_color_override(&"icon_hover_color", Color.CORAL)
+		debugger_enabled_toggle_button.add_theme_color_override(&"icon_hover_pressed_color", Color.CORAL)
+		debugger_enabled_toggle_button.add_theme_color_override(&"icon_pressed_color", Color.CORAL)
+		debugger_enabled_toggle_button.add_theme_color_override(&"icon_focus_color", Color.CORAL)

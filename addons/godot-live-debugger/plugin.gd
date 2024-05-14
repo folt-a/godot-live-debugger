@@ -14,6 +14,11 @@ const NODE_LIVE_DEBUGGER_TSCN_PATH:String = "res://addons/godot-live-debugger/no
 # ko:이 애드온이 콘솔 로그에 출력하는지 여부
 # en:Whether this add-on outputs to the console log
 const is_output_console_log_initial_value:bool = true
+# * frame_interval
+# ja:何フレームに一度ノードをチェックするかのフレーム値です。パフォーマンスが落ちる場合は値を大きくしてください。
+# ko:노드를 확인할 프레임 값입니다. 성능이 떨어지는 경우 값이 커지도록 설정하십시오.
+# en:Frame value to check the node. If game performance is degraded, increase the value.
+const frame_interval_initial_value:int = 1
 # * always_on_top
 # ja:常に最前面に表示
 # ko:항상 최상위에 표시
@@ -44,8 +49,7 @@ const display_float_decimal_initial_value:int = 2
 # ko:외부 데이터 저장시 자동 업데이트 여부
 # en:Whether to update automatically when saving external data
 const is_update_when_save_external_data_initial_value:bool = true
-# * 
-# ja:
+
 
 var before_is_add_debugger_to_autoload_singleton:bool
 
@@ -72,6 +76,8 @@ func _enter_tree() -> void:
 		de = "↑説明"
 	elif _is_ko:
 		de = "↑설명"
+	else:
+		de = "↑Description"
 
 	# 最前面
 	if not ProjectSettings.has_setting("godot_live_debugger/always_on_top"):
@@ -88,11 +94,12 @@ func _enter_tree() -> void:
 			description = "LiveDebuggerのウィンドウを常に最前面に表示します。"
 		elif _is_ko:
 			description = "LiveDebugger 창을 항상 최상위에 표시합니다."
+		else:
+			description = "Always display the LiveDebugger window on top."
 		
-		if _is_ja or _is_ko:
-			ProjectSettings.set("godot_live_debugger/" + de + "_always_on_top", description)
-			ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_always_on_top", description)
-			_add_description_prop("godot_live_debugger/" + de + "_always_on_top")
+		ProjectSettings.set("godot_live_debugger/" + de + "_always_on_top", description)
+		ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_always_on_top", description)
+		_add_description_prop("godot_live_debugger/" + de + "_always_on_top")
 		ProjectSettings.save()
 	
 	# フォーカス時に自動ポーズ
@@ -108,11 +115,35 @@ func _enter_tree() -> void:
 			description = "LiveDebuggerをフォーカスしたときに自動的にゲームのSceneTreeをpausedにします"
 		elif _is_ko:
 			description = "LiveDebugger에 포커스를 맞추면 자동으로 게임의 SceneTree를 일시 중지합니다"
+		else:
+			description = "When LiveDebugger is focused, automatically pause the SceneTree of the game"
 		
-		if _is_ja or _is_ko:
-			ProjectSettings.set("godot_live_debugger/" + de + "_is_auto_focus_pause", description)
-			ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_is_auto_focus_pause", description)
-			_add_description_prop("godot_live_debugger/" + de + "_is_auto_focus_pause")
+		ProjectSettings.set("godot_live_debugger/" + de + "_is_auto_focus_pause", description)
+		ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_is_auto_focus_pause", description)
+		_add_description_prop("godot_live_debugger/" + de + "_is_auto_focus_pause")
+		ProjectSettings.save()
+
+	# フレーム間隔
+	if not ProjectSettings.has_setting("godot_live_debugger/frame_interval"):
+		ProjectSettings.set("godot_live_debugger/frame_interval", frame_interval_initial_value)
+		ProjectSettings.set_initial_value("godot_live_debugger/frame_interval", frame_interval_initial_value)
+		ProjectSettings.add_property_info({
+		"name": "godot_live_debugger/frame_interval",
+		"type": TYPE_INT,
+		"hint": PROPERTY_HINT_RANGE,
+		"hint_string": "1,60"
+		})
+		var description = ""
+		if _is_ja:
+			description = "何フレームに一度ノードをチェックするかのフレーム値です。パフォーマンスが落ちる場合は値を大きくしてください。"
+		elif _is_ko:
+			description = "노드를 확인할 프레임 값입니다. 성능이 떨어지는 경우 값이 커지도록 설정하십시오."
+		else:
+			description = "Frame value to check the node. If game performance is degraded, increase the value."
+		
+		ProjectSettings.set("godot_live_debugger/" + de + "_frame_interval", description)
+		ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_frame_interval", description)
+		_add_description_prop("godot_live_debugger/" + de + "_frame_interval")
 		ProjectSettings.save()
 
 	# コンソールログ
@@ -128,11 +159,12 @@ func _enter_tree() -> void:
 			description = "このアドオンがコンソールログに出力するか"
 		elif _is_ko:
 			description = "이 애드온이 콘솔 로그에 출력하는지 여부"
+		else:
+			description = "Whether this add-on outputs to the console log"
 		
-		if _is_ja or _is_ko:
-			ProjectSettings.set("godot_live_debugger/" + de + "_is_output_console_log", description)
-			ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_is_output_console_log", description)
-			_add_description_prop("godot_live_debugger/" + de + "_is_output_console_log")
+		ProjectSettings.set("godot_live_debugger/" + de + "_is_output_console_log", description)
+		ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_is_output_console_log", description)
+		_add_description_prop("godot_live_debugger/" + de + "_is_output_console_log")
 		ProjectSettings.save()
 	_is_output_console_log = ProjectSettings.get_setting("godot_live_debugger/is_output_console_log") as bool
 	
@@ -151,11 +183,12 @@ func _enter_tree() -> void:
 			description = "無視するスクリプトパス(*でワイルドカード指定可能)"
 		elif _is_ko:
 			description = "무시할 스크립트 경로 (*로 와일드 카드 지정 가능)"
+		else:
+			description = "Ignore script paths (* can be wildcard)"
 		
-		if _is_ja or _is_ko:
-			ProjectSettings.set("godot_live_debugger/" + de + "_ignore_script_paths", description)
-			ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_ignore_script_paths", description)
-			_add_description_prop("godot_live_debugger/" + de + "_ignore_script_paths")
+		ProjectSettings.set("godot_live_debugger/" + de + "_ignore_script_paths", description)
+		ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_ignore_script_paths", description)
+		_add_description_prop("godot_live_debugger/" + de + "_ignore_script_paths")
 		ProjectSettings.save()
 
 	# Autoloadシングルトンにデバッガを追加するか
@@ -171,11 +204,12 @@ func _enter_tree() -> void:
 			description = "Autoloadシングルトンに Live Debugger ノードを追加するか"
 		elif _is_ko:
 			description = "Autoload 싱글톤에 Live Debugger 노드를 추가할 것인가"
+		else:
+			description = "Whether to add the Live Debugger node to the Autoload singleton"
 
-		if _is_ja or _is_ko:
-			ProjectSettings.set("godot_live_debugger/" + de + "_is_add_debugger_to_autoload_singleton", description)
-			ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_is_add_debugger_to_autoload_singleton", description)
-			_add_description_prop("godot_live_debugger/" + de + "_is_add_debugger_to_autoload_singleton")
+		ProjectSettings.set("godot_live_debugger/" + de + "_is_add_debugger_to_autoload_singleton", description)
+		ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_is_add_debugger_to_autoload_singleton", description)
+		_add_description_prop("godot_live_debugger/" + de + "_is_add_debugger_to_autoload_singleton")
 		
 		add_autoload_singleton("LiveDebugger", NODE_LIVE_DEBUGGER_TSCN_PATH)#initial_value
 		
@@ -287,6 +321,9 @@ func update():
 	_add_user_dir_icon("Info")
 	
 	_add_user_dir_icon("Pause")
+	
+	_add_user_dir_icon("GuiTreeArrowDown")
+	_add_user_dir_icon("GuiTreeArrowRight")
 	
 
 
