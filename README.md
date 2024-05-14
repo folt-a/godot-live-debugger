@@ -4,13 +4,13 @@ This is a Godot addon in development.
 
 これは開発中のGodotアドオンです。
 
-READMEは書きかけです。ProjectSettingsとかまだ書いてない
+READMEは書きかけです。
 
-README is a work in progress. I haven't written ProjectSettings yet.
+README is a work in progress.
 
 A high-level window for debugging game status.
 
-You can monitor the properties of the nodes you want to view and edit their values.
+You can monitor the properties of the nodes you want to view and edit values.
 
 You can edit it as the game window updates in real time as you run it.
 
@@ -133,4 +133,54 @@ func play_animation(anim_name:StringName) -> String:
 
 
 ```
+
+# Project Settings
+
+* is_output_console_log
+
+ja:このアドオンがコンソールログに出力するか  
+ko:이 애드온이 콘솔 로그에 출력하는지 여부  
+en:Whether this add-on outputs to the console log
+
+* frame_interval
+ 
+ja:何フレームに一度ノードをチェックするかのフレーム値です。パフォーマンスが落ちる場合は値を大きくしてください。  
+ko:노드를 확인할 프레임 값입니다. 성능이 떨어지는 경우 값이 커지도록 설정하십시오.  
+en:Frame value to check the node. If game performance is degraded, increase the value.
+
+* always_on_top
+
+ja:常に最前面に表示  
+ko:항상 최상위에 표시  
+en:Always on top
+
+* is_auto_focus_pause
+
+ja:LiveDebuggerをフォーカスしたときに自動的にゲームのSceneTreeをpausedにします  
+ko:LiveDebugger에 포커스를 맞추면 자동으로 게임의 SceneTree를 일시 중지합니다  
+en:When LiveDebugger is focused, automatically pause the SceneTree of the game
+
+* ignore_script_paths
+
+ja:無視するスクリプトパス(*でワイルドカード指定可能)  
+ko:무시할 스크립트 경로 (*로 와일드 카드 지정 가능)  
+en:Ignore script paths (* can be wildcard)
+
+* is_add_debugger_to_autoload_singleton
+
+ja:Autoloadシングルトンに Live Debugger ノードを追加するか  
+ko:Autoload 싱글톤에 Live Debugger 노드를 추가할 것인가  
+en:Whether to add the Live Debugger node to the Autoload singleton
+
+* display_float_decimal
+
+ja:floatの表示桁数  
+ko:float의 표시 자릿수  
+en:float display decimal
+
+* is_update_when_save_external_data
+
+ja:外部データ保存時に自動更新するか  
+ko:외부 데이터 저장시 자동 업데이트 여부  
+en:Whether to update automatically when saving external data
 
