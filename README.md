@@ -240,6 +240,8 @@ MIT License.
 
 If this addon helped you develop your game project, please donate.
 
+---
+
 # Live Debugger 日本語README （Japanese translation README）
 
 ゲームステータスのデバッグのための高レベルウィンドウです。
@@ -483,3 +485,247 @@ MITライセンスです。
 # 寄付
 
 便利だなあとなったらどうぞお願いします
+
+---
+
+# Live Debugger 한국어 README （Korean translation README）
+
+게임 상태를 디버깅하기 위한 고수준 윈도우입니다.
+
+표시하고 싶은 노드의 속성을 모니터링하거나 값을 편집할 수 있습니다.
+
+게임 윈도우를 실행하면 실시간으로 업데이트되므로 편집할 수 있습니다.
+
+조작을 방해하지 않고 게임 진행 등의 변수를 확인할 수 있습니다.
+
+## 설치 및 사용 방법
+
+1. 다운로드 또는 Git 클론을 통해 로컬 PC에 넣습니다.
+
+2. addons/godot-live-debugger가 되도록 당신의 Godot 프로젝트로 이동/복사합니다.
+
+3. Godot의 "프로젝트 설정" → "플러그인"에서 godot-live-debugger를 ✅합니다.
+
+4. 자동으로 "자동 로드"에 LiveDebugger 씬이 등록되어 있습니다.
+
+5. 아래와 같이 모니터링하고 싶은 노드의 스크립트에 설정을 합니다.
+
+6. 게임을 시작합니다.
+
+
+## 스크립트 설정
+
+```gdscript
+
+#@Debug 주석 바로 아래의 속성을 모니터링 대상으로 합니다.
+
+#@Debug
+var property_1:int = 300
+
+#---
+
+# 함수를 지정할 수도 있습니다. _process에서 매 프레임 호출되므로 주의하세요.
+
+#@Debug
+func get_str():
+	return "abc"
+
+#---
+
+# 「」나 ''로 보기 좋게 표시를 위한 이름을 붙일 수도 있습니다.
+
+#@Debug'alias_name'
+var property_2:String = ""
+
+#@Debug「別名」
+
+#---
+
+# 카테고리를 붙일 수 있습니다. 트리 아이템을 접을 수 있습니다.
+
+#@Debug(category_name)
+var property_3:Vector2 = Vector2.ZERO
+
+#---
+
+# 카테고리는 슬래시 /로 하위 카테고리로 만들 수 있습니다. 접기 가능.
+
+#@Debug(cate1/nested_category2)
+var property_4:Vector3 = Vector3.ZERO
+
+#---
+
+# 속성 이름 지정으로 속성을 지정할 수도 있습니다.
+
+#@Debug[position]
+
+#---
+
+# 속성 이름 지정으로 다른 노드의 속성을 지정할 수도 있습니다. 단, 모니터링만 가능하고 편집은 불가능합니다.
+
+#@Debug[./ChildNode:position]
+
+# 내부 처리에서는 : 앞까지 get_node()하므로 %도 사용 가능합니다.
+
+#@Debug[%ChildNode:position]
+
+#---
+
+# {}로 보기 좋게 색상을 지정할 수 있습니다.
+
+#@Debug{#RED}
+var property_5:StringName = &""
+
+#@Debug{#f0f0f0}
+var property_6:bool = false
+
+#---
+
+
+# 여러 지정도 가능합니다. 순서는 상관없습니다.
+
+#@Debug(cate)'alias'{#RED}
+var property_7:int = 123
+
+#@Debug{#f0f0f0}
+var property_8:bool = false
+
+#---
+
+# #@Debug 대신 #@Call로 함수를 지정하면 버튼이 표시되고, 누르면 해당 함수를 실행합니다. 모니터링 대상으로 하지 않습니다.
+# 함수의 return 결과가 값으로 표시됩니다. 인수 1개를 값으로 입력하여 실행할 수도 있습니다.
+
+#@Call
+func play() -> String:
+	animation_player.play()
+	return anim_name
+
+#@Call
+func play_animation(anim_name:StringName) -> String:
+	animation_player.play(anim_name)
+	return anim_name
+
+
+```
+
+## Project Settings 프로젝트 설정
+
+### Debug Window 디버그 윈도우 설정
+
+* always_on_top
+
+디버거 윈도우를 항상 최상위에 표시
+
+* debugger_window_position_type
+
+デバッガーのウィンドウの位置の種別
+
+- 디버거 윈도우의 위치 종류
+- 게임 왼쪽 인접
+- 화면 오른쪽 인접
+- 화면 왼쪽 인접
+- 절대 위치 지정
+
+* is_debugger_window_height_adjust_monitor_height
+
+디버거 윈도우의 높이를 모니터의 높이에 맞출지 여부
+
+윈도우의 높이가 모니터 전체까지 늘어납니다.
+debugger_window_size의 Y를 무시합니다.
+debugger_window_position_offset의 Y를 이동하여 위치를 내리면 그만큼 작아집니다.
+
+절대 위치 지정일 경우 무시됩니다.
+
+* debugger_window_position_offset
+
+디버거 윈도우 위치의 오프셋 (위치 이동)
+
+윈도우의 위치를 이동합니다.
+
+절대 위치 지정일 경우 무시됩니다.
+
+* debugger_window_absolute_position
+
+디버거 윈도우의 절대 위치
+
+절대 위치 지정일 경우에만 유효합니다.
+
+멀티 모니터일 경우 모든 모니터 위치가 영향을 미치므로 화면 밖으로 튀어나가기 쉽습니다. 주의하세요.
+
+* debugger_window_size
+
+디버거 윈도우의 크기
+
+is_debugger_window_height_adjust_monitor_height가 켜져 있을 경우 Y는 무시됩니다.
+
+### デバッガー設定
+
+* frame_interval
+ 
+몇 프레임마다 노드를 체크할지에 대한 프레임 값입니다.
+
+성능이 떨어질 경우 값을 크게 해주세요.
+
+기본값은 1이므로 매 프레임입니다.
+
+* is_auto_focus_pause
+
+디버거 윈도우에 포커스되었을 때 자동으로 게임의 SceneTree를 일시 정지합니다.
+
+* display_float_decimal
+
+float의 표시 자릿수 제한입니다.
+
+표시만 제한되므로, 그 이상의 자릿수를 입력하여 반영시키면 제대로 반영됩니다. 표시 자릿수는 제한됩니다.
+
+기본값은 2자리입니다. 1.123456 → 1.12로 표시됩니다.
+
+* is_output_console_log
+
+이 애드온이 콘솔 로그에 로그를 출력할지 여부
+
+끄면 이 애드온은 print하지 않습니다.
+
+외부 데이터 업데이트 시 모든 스크립트를 체크하여 대상을 찾으므로 로그가 매번 출력됩니다.
+
+* ignore_script_paths
+
+무시할 스크립트 경로 (*로 와일드카드 지정 가능)
+
+* is_add_debugger_to_autoload_singleton
+
+"자동 로드" (Autoload 싱글톤)에 Live Debugger 노드를 추가할지 여부
+
+켜면 등록됩니다. 끄면 등록 해제됩니다.
+
+프로젝트의 "자동 로드"에서 추가/삭제해도 됩니다.
+
+이 애드온은 어디에 두어도 모든 노드를 체크합니다.
+
+특정 씬만 체크하고 싶은 경우 LiveDebugger.tscn 씬을 노드로서 트리에 추가할 수도 있습니다.
+
+* is_update_when_save_external_data
+
+외부 데이터 저장 시 자동 업데이트 여부
+
+외부 업데이트 시 모든 스크립트를 체크하여 대상을 찾습니다.
+
+무언가 업데이트할 때마다 호출되므로 무거워질 경우 꺼주세요.
+
+그 경우 대신에
+
+"프로젝트" → "도구" → "Update LiveDebugger Data"를 실행해주세요.
+
+## Contributing 기여
+
+요청, 제안, 버그 리포트를 해주세요.
+
+이슈, 풀 리퀘스트 등 기다리고 있습니다.
+
+## License 라이선스
+
+MIT 라이선스입니다.
+
+# Donate 기부
+
+편리하다고 생각되면 부탁드립니다.

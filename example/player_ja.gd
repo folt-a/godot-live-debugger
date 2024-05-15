@@ -5,7 +5,7 @@ extends CharacterBody2D
 #@Debug「プレイヤーのきほん速度」
 var speed:float = 300.0
 
-#@Debug「ジャンプ速度」
+#@Debug「ジャンプ速度」{AQUA}
 var jump_velocity:float = -400.0
 
 #@Debug'重力のつよさ'
@@ -15,11 +15,9 @@ var gravity:float = ProjectSettings.get_setting("physics/2d/default_gravity")
 @export var text:String = "ワイや Gobotや":
 	set(v):
 		text = v
-		var p :=AnimationPlayer.new()
-		p.play()
 		queue_redraw()
 
-#@Debug「プレイヤー位置リセット」
+#@Debug「プレイヤー位置リセット」{#00ff00}
 @onready var position_for_reset:Vector2 = global_position
 
 @onready var _default_font:Font = get_tree().root.get_theme_default_font() 

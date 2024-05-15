@@ -5,19 +5,19 @@ extends CharacterBody2D
 #@Debug
 var speed:float = 300.0
 
-#@Debug
+#@Debug{AQUA}
 var jump_velocity:float = -400.0
 
 #@Debug'Player Gravity!!'
 var gravity:float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 #@Debug
-@export var text:String = "Gobot san":
+@export var text:String = "I'm Gobot san.":
 	set(v):
 		text = v
 		queue_redraw()
 
-#@Debug
+#@Debug{#00ff00}
 @onready var position_for_reset:Vector2 = global_position
 
 @onready var _default_font:Font = get_tree().root.get_theme_default_font() 
@@ -46,6 +46,6 @@ func _physics_process(delta):
 	move_and_slide()
 
 
-#@Call「位置をリセットする」
+#@Call
 func reset_position():
 	global_position = position_for_reset
