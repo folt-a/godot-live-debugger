@@ -208,7 +208,7 @@ Logs will appear every time it checks all scripts to find targets when updating 
 
 * ignore_script_paths
 
-Script paths to ignore (* can be used for wildcard specification)
+Script paths to ignore
 
 * is_add_debugger_to_autoload_singleton
 
@@ -453,7 +453,7 @@ floatの表示桁数の制限です。
 
 * ignore_script_paths
 
-無視するスクリプトパス(*でワイルドカード指定可能)  
+無視するスクリプトパス
 
 * is_add_debugger_to_autoload_singleton
 
@@ -702,7 +702,7 @@ float의 표시 자릿수 제한입니다.
 
 * ignore_script_paths
 
-무시할 스크립트 경로 (*로 와일드카드 지정 가능)
+무시할 스크립트 경로
 
 * is_add_debugger_to_autoload_singleton
 

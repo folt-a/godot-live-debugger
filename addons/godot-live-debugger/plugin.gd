@@ -106,6 +106,8 @@ var _is_ko:bool = false
 
 var _is_output_console_log:bool
 
+var _ignore_paths:Array[String] = []
+
 func _init():
 	_is_ja = TranslationServer.get_locale()\
 		.contains("ja")
@@ -413,11 +415,11 @@ func _enter_tree() -> void:
 		})
 		var description = ""
 		if _is_ja:
-			description = "無視するスクリプトパス(*でワイルドカード指定可能)"
+			description = "無視するスクリプトパス"
 		elif _is_ko:
-			description = "무시할 스크립트 경로 (*로 와일드 카드 지정 가능)"
+			description = "무시할 스크립트 경로"
 		else:
-			description = "Ignore script paths (* can be wildcard)"
+			description = "Ignore script paths"
 		
 		ProjectSettings.set("godot_live_debugger/editor/" + de + "_ignore_script_paths", description)
 		ProjectSettings.set_initial_value("godot_live_debugger/editor/" + de + "_ignore_script_paths", description)
@@ -558,7 +560,7 @@ func _exit_tree() -> void:
 	#ProjectSettings.clear("godot_live_debugger/editor/" + de + "_display_float_decimal")
 	#ProjectSettings.clear("godot_live_debugger/editor/is_update_when_save_external_data")
 	#ProjectSettings.clear("godot_live_debugger/editor/" + de + "_is_update_when_save_external_data")
-	return
+	#return
 
 func update():
 	var is_ja:bool = EditorInterface.get_editor_settings()\
@@ -893,7 +895,7 @@ func update():
 	result_json_file.store_string(JSON.stringify(results,"\t",true))
 	
 	var props_count = results.filter(func(d): return d.has("prop")).size()
-	var funcs_count = results.filter(func(d): return d.has("prop")).size()
+	var funcs_count = results.filter(func(d): return d.has("func")).size()
 	
 	if _is_output_console_log:
 		if is_ja:
@@ -958,6 +960,8 @@ func get_all_script_paths() -> Array[String]:
 	if dir.get_open_error() == OK:
 		get_dir(dir, scripts, dir_paths)
 	
+	_ignore_paths = Array(ProjectSettings.get_setting("godot_live_debugger/editor/ignore_script_paths"), TYPE_STRING,&"",null)
+	
 	while not dir_paths.is_empty():
 		if dir.change_dir(dir_paths[0]) == OK:
 			get_dir(dir, scripts, dir_paths)
@@ -979,8 +983,7 @@ func get_dir(dir: DirAccess, scripts: Array[String], dir_paths: Array[String]) -
 				dir_paths.append(dir.get_current_dir().path_join(file_name))
 		else:
 			if file_name.ends_with(".gd"):
-				if dir.get_current_dir() == "res://":
-					scripts.append(dir.get_current_dir().path_join(file_name))
-				else:
-					scripts.append(dir.get_current_dir().path_join(file_name))
+				var filepath:String = dir.get_current_dir().path_join(file_name)
+				if _ignore_paths.find(filepath) == -1:
+					scripts.append(filepath)
 		file_name = dir.get_next()
