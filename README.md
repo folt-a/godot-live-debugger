@@ -244,6 +244,7 @@ If this addon helped you develop your game project, please donate.
 
 ---
 
+# jpreadme
 # Live Debugger 日本語README （Japanese translation README）
 
 ゲームステータスのデバッグのための高レベルウィンドウです。
@@ -492,6 +493,7 @@ MITライセンスです。
 
 ---
 
+# koreadme
 # Live Debugger 한국어 README （Korean translation README）
 
 게임 상태를 디버깅하기 위한 고수준 윈도우입니다.
