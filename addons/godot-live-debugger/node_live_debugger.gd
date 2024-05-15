@@ -493,10 +493,11 @@ func _add_list(n:Node):
 	item_for_dir_root.set_text(0,n.name)
 	item_for_dir_root.set_tooltip_text(0,str(n.get_path()))
 	
-	if n.visible:
-		item_for_dir_root.add_button(0, _load_icon("GuiVisibilityVisible"))
-	else:
-		item_for_dir_root.add_button(0, _load_icon("GuiVisibilityHidden"))
+	if n is CanvasItem or n is Node3D:
+		if n.visible:
+			item_for_dir_root.add_button(0, _load_icon("GuiVisibilityVisible"))
+		else:
+			item_for_dir_root.add_button(0, _load_icon("GuiVisibilityHidden"))
 	
 	item_for_dir_root.set_icon(0, _load_icon(debug_infos[0].node_icon))
 	
