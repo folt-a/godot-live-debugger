@@ -415,9 +415,9 @@ func _update_node(n:Node, item:TreeItem):
 		# 他ノードプロパティの場合はget_pathする
 		if d.has("node_path"):
 			# メタデータにキャッシュして毎フレームget_nodeを避ける 効果あるのか？
-			if not n.has_meta(d.node_path):
-				n.set_meta(d.node_path, n.get_node_or_null(d.node_path))
-			n = n.get_meta(d.node_path)
+			if not n.has_meta("n_" + d.node_path):
+				n.set_meta("n_" + d.node_path, n.get_node_or_null(d.node_path))
+			n = n.get_meta("n_" + d.node_path)
 			if not n:return
 		if d.has("prop"):
 			
