@@ -252,6 +252,8 @@ If this addon helped you develop your game project, please donate.
 
 操作を妨げずにゲーム進行などの変数を確認できます。
 
+![image](https://github.com/folt-a/godot-live-debugger/assets/32963227/479576e4-a448-4df9-9853-03a0d39c6f79)
+
 ## インストール、使い方
 
 1. downloadかGitのcloneをしてローカルPCに入れます。
@@ -498,6 +500,8 @@ MITライセンスです。
 
 조작을 방해하지 않고 게임 진행 등의 변수를 확인할 수 있습니다.
 
+![image](https://github.com/folt-a/godot-live-debugger/assets/32963227/01bfb9a3-9af8-45d9-aefc-501c33f74f75)
+
 ## 설치 및 사용 방법
 
 1. 다운로드 또는 Git 클론을 통해 로컬 PC에 넣습니다.
@@ -618,7 +622,7 @@ func play_animation(anim_name:StringName) -> String:
 
 * debugger_window_position_type
 
-デバッガーのウィンドウの位置の種別
+디버거 윈도우의 위치 종류
 
 - 디버거 윈도우의 위치 종류
 - 게임 왼쪽 인접
@@ -658,7 +662,7 @@ debugger_window_position_offset의 Y를 이동하여 위치를 내리면 그만�
 
 is_debugger_window_height_adjust_monitor_height가 켜져 있을 경우 Y는 무시됩니다.
 
-### デバッガー設定
+### Debugger 디버거 설정
 
 * frame_interval
  
