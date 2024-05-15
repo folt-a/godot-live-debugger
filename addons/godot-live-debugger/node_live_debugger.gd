@@ -70,6 +70,11 @@ var _is_focus_pause:bool = false
 var _is_auto_focus_pause:bool = false
 
 # setting list
+var _debugger_window_position_type:int
+var _is_debugger_window_height_adjust_monitor_height:bool
+var _debugger_window_position_offset:Vector2i
+var _debugger_window_size:Vector2i
+var _debugger_window_absolute_position:Vector2i
 var _is_output_console_log:bool
 var _frame_interval:int
 var _always_on_top:bool
@@ -79,6 +84,17 @@ var _display_float_decimal:int
 var _is_update_when_save_external_data:bool
 
 var _debugger_enabled:bool = true
+
+# ja:デバッガーのウィンドウの位置の種別
+const debugger_window_position_type_initial_value:int = 0
+# ja:デバッガーのウィンドウの高さをモニターの高さに合わせるか
+const is_debugger_window_height_adjust_monitor_height_initial_value:bool = true
+# ja:デバッガーのウィンドウの位置のオフセット（位置をずらす）
+const debugger_window_position_offset_initial_value:Vector2i = Vector2i.ZERO
+# ja:デバッガーのウィンドウのサイズ
+const debugger_window_size_initial_value:Vector2i = Vector2i(800, 800)
+# ja:デバッガーのウィンドウの絶対位置
+const debugger_window_absolute_position_initial_value:Vector2i = Vector2i.ZERO
 
 # ja:このアドオンがコンソールログに出力するか
 const is_output_console_log_initial_value:bool = true
@@ -127,14 +143,20 @@ func _init() -> void:
 	for d in _debug_information_lists:
 		if not _debug_path_mapping_dir.has(d.path):
 			_debug_path_mapping_dir[d.path] = d.path
-	_is_output_console_log = ProjectSettings.get_setting("godot_live_debugger/is_output_console_log", is_output_console_log_initial_value)
-	_frame_interval = ProjectSettings.get_setting("godot_live_debugger/frame_interval", frame_interval_initial_value)
-	_always_on_top = ProjectSettings.get_setting("godot_live_debugger/always_on_top", always_on_top_initial_value)
+	_debugger_window_position_type = ProjectSettings.get_setting("godot_live_debugger/debugger_window/debugger_window_position_type", debugger_window_position_type_initial_value)
+	_is_debugger_window_height_adjust_monitor_height = ProjectSettings.get_setting("godot_live_debugger/debugger_window/is_debugger_window_height_adjust_monitor_height", is_debugger_window_height_adjust_monitor_height_initial_value)
+	_debugger_window_position_offset = ProjectSettings.get_setting("godot_live_debugger/debugger_window/debugger_window_position_offset", debugger_window_position_offset_initial_value)
+	_debugger_window_size = ProjectSettings.get_setting("godot_live_debugger/debugger_window/debugger_window_size", debugger_window_size_initial_value)
+	_debugger_window_absolute_position = ProjectSettings.get_setting("godot_live_debugger/debugger_window/debugger_window_absolute_position", debugger_window_absolute_position_initial_value)
+
+	_is_output_console_log = ProjectSettings.get_setting("godot_live_debugger/editor/is_output_console_log", is_output_console_log_initial_value)
+	_frame_interval = ProjectSettings.get_setting("godot_live_debugger/debugger/frame_interval", frame_interval_initial_value)
+	_always_on_top = ProjectSettings.get_setting("godot_live_debugger/debugger_window/always_on_top", always_on_top_initial_value)
 	always_on_top = _always_on_top
-	_is_auto_focus_pause = ProjectSettings.get_setting("godot_live_debugger/is_auto_focus_pause", is_auto_focus_pause_initial_value)
+	_is_auto_focus_pause = ProjectSettings.get_setting("godot_live_debugger/debugger/is_auto_focus_pause", is_auto_focus_pause_initial_value)
 	#_ignore_script_paths = Array(ProjectSettings.get_setting("godot_live_debugger/ignore_script_paths",ignore_script_paths_initial_value),TYPE_STRING,&"",null)
 	#_is_add_debugger_to_autoload_singleton = ProjectSettings.get_setting("godot_live_debugger/is_add_debugger_to_autoload_singleton") as bool
-	_display_float_decimal = ProjectSettings.get_setting("godot_live_debugger/display_float_decimal", display_float_decimal_initial_value)
+	_display_float_decimal = ProjectSettings.get_setting("godot_live_debugger/debugger/display_float_decimal", display_float_decimal_initial_value)
 
 
 #-----------------------------------------------------------
@@ -159,8 +181,65 @@ func _ready():
 	await tree.process_frame
 	await tree.process_frame
 	await tree.process_frame
-	# メインゲームウィンドウの右端にくっつけて表示する
-	self.position = tree.root.position + Vector2i(tree.root.size.x, 0)
+
+	
+	game_window_id = tree.root.get_window_id()
+
+	var screen:int = DisplayServer.window_get_current_screen(game_window_id)
+	
+	var game_screen_position:Vector2i = DisplayServer.screen_get_position(screen)
+	var game_screen_size:Vector2i = DisplayServer.screen_get_size(screen)
+	
+	# ウィンドウの位置を設定
+	# ゲーム右隣接=0,ゲーム左隣接=1,画面右隣接=2,画面左隣接=3,絶対位置指定=4
+	if _debugger_window_position_type == 0:
+		# メインゲームウィンドウの右端にくっつけて表示する
+		if _is_debugger_window_height_adjust_monitor_height:
+			# 高さぴったり
+			self.size = Vector2(_debugger_window_size.x, game_screen_size.y - _debugger_window_position_offset.y)
+			self.position = tree.root.position + Vector2i(tree.root.size.x,0) + Vector2i(_debugger_window_position_offset.x, 0)
+			self.position.y = game_screen_position.y + _debugger_window_position_offset.y
+		else:
+			self.size = _debugger_window_size
+			self.position = tree.root.position + Vector2i(tree.root.size.x, 0) + _debugger_window_position_offset
+
+	elif _debugger_window_position_type == 1:
+		# メインゲームウィンドウの左端にくっつけて表示する
+		if _is_debugger_window_height_adjust_monitor_height:
+			# 高さぴったり
+			self.size = Vector2(_debugger_window_size.x, game_screen_size.y - _debugger_window_position_offset.y)
+			self.position = tree.root.position - Vector2i(_debugger_window_size.x, 0)
+			self.position.y = game_screen_position.y + _debugger_window_position_offset.y
+		else:
+			self.size = _debugger_window_size
+			self.position = tree.root.position - Vector2i(_debugger_window_size.x, 0) + _debugger_window_position_offset
+	
+	elif _debugger_window_position_type == 2:
+		# 画面右端にくっつけて表示する
+		if _is_debugger_window_height_adjust_monitor_height:
+			# 高さぴったり
+			self.size = Vector2(_debugger_window_size.x, game_screen_size.y - _debugger_window_position_offset.y)
+			self.position = Vector2i(game_screen_position.x + game_screen_size.x - _debugger_window_size.x, game_screen_position.y) + _debugger_window_position_offset
+		else:
+			self.size = _debugger_window_size
+			self.position = Vector2i(game_screen_position.x + game_screen_size.x - _debugger_window_size.x, game_screen_position.y) + _debugger_window_position_offset
+	
+	elif _debugger_window_position_type == 3:
+		# 画面左端にくっつけて表示する
+		if _is_debugger_window_height_adjust_monitor_height:
+			# 高さぴったり
+			self.size = Vector2(_debugger_window_size.x, game_screen_size.y - _debugger_window_position_offset.y)
+			self.position = Vector2i(game_screen_position.x, game_screen_position.y + _debugger_window_position_offset.y)
+		else:
+			self.size = _debugger_window_size
+			self.position = Vector2i(game_screen_position.x, game_screen_position.y) + _debugger_window_position_offset
+	
+	elif _debugger_window_position_type == 4:
+		# 絶対位置指定
+		self.size = _debugger_window_size
+		self.position = _debugger_window_absolute_position
+	
+	
 	
 	pause_toggle_button.icon = _load_icon("Pause")
 	pause_toggle_button.add_theme_color_override(&"icon_normal_color", Color.CORAL)
@@ -246,7 +325,6 @@ func _ready():
 	# 起動時にゲームのウィンドウのフォーカスをとってしまうので
 	# がんばってお返しする
 	var count_for_clash:int = 0
-	game_window_id = tree.root.get_window_id()
 	while not DisplayServer.window_is_focused(game_window_id):
 		await tree.process_frame
 		DisplayServer.window_move_to_foreground()

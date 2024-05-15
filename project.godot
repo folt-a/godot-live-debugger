@@ -28,6 +28,12 @@ window/subwindows/embed_subwindows=false
 
 enabled=PackedStringArray("res://addons/godot-live-debugger/plugin.cfg")
 
+[godot_live_debugger]
+
+debugger_window/debugger_window_position_type=2
+debugger_window/debugger_window_position_offset=Vector2i(0, 180)
+debugger_window/debugger_window_size=Vector2i(1000, 800)
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

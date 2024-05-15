@@ -9,46 +9,94 @@ const NODE_LIVE_DEBUGGER_TSCN_PATH:String = "res://addons/godot-live-debugger/no
 
 # setting list
 
-# * is_output_console_log
-# ja:このアドオンがコンソールログに出力するか
-# ko:이 애드온이 콘솔 로그에 출력하는지 여부
-# en:Whether this add-on outputs to the console log
-const is_output_console_log_initial_value:bool = true
-# * frame_interval
-# ja:何フレームに一度ノードをチェックするかのフレーム値です。パフォーマンスが落ちる場合は値を大きくしてください。
-# ko:노드를 확인할 프레임 값입니다. 성능이 떨어지는 경우 값이 커지도록 설정하십시오.
-# en:Frame value to check the node. If game performance is degraded, increase the value.
-const frame_interval_initial_value:int = 1
+# Cate debugger_window
+
 # * always_on_top
 # ja:常に最前面に表示
 # ko:항상 최상위에 표시
 # en:Always on top
 const always_on_top_initial_value:bool = true
+const order_always_on_top:int = 10
+# * debugger_window_position_type
+# ja:デバッガーのウィンドウの位置の種別
+# ko:디버거 창 위치 유형
+# en:Debugger window position type
+const debugger_window_position_type_initial_value:int = 0
+const order_debugger_window_position_type = 20
+# * is_debugger_window_height_adjust_monitor_height
+# ja:デバッガーのウィンドウの高さをモニターの高さに合わせるか
+# ko:디버거 창 높이를 모니터 높이에 맞추시겠습니까?
+# en:Do you want to adjust the height of the debugger window to the height of the monitor?
+const is_debugger_window_height_adjust_monitor_height_initial_value:bool = true
+const order_is_debugger_window_height_adjust_monitor_height = 30
+# * debugger_window_position_offset
+# ja:デバッガーのウィンドウの位置のオフセット（位置をずらす）
+# ko:디버거 창 위치 오프셋
+# en:Debugger window position offset
+const debugger_window_position_offset_initial_value:Vector2i = Vector2i.ZERO
+const order_debugger_window_position_offset = 40
+# * debugger_window_absolute_position
+# ja:デバッガーのウィンドウの絶対位置 (typeが絶対位置指定の場合のみ有効)
+# ko:디버거 창의 절대 위치 (type이 절대 위치 지정인 경우에만 유효)
+# en:Absolute position of the debugger window (valid only when type is absolute position)
+const debugger_window_absolute_position_initial_value:Vector2i = Vector2i.ZERO
+const order_debugger_window_absolute_position = 50
+# * debugger_window_size
+# ja:デバッガーのウィンドウのサイズ
+# ko:디버거 창 크기
+# en:Debugger window size
+const debugger_window_size_initial_value:Vector2i = Vector2i(800, 800)
+const order_debugger_window_size = 60
+
+# Cate debugger
+
+# * frame_interval
+# ja:何フレームに一度ノードをチェックするかのフレーム値です。パフォーマンスが落ちる場合は値を大きくしてください。
+# ko:노드를 확인할 프레임 값입니다. 성능이 떨어지는 경우 값이 커지도록 설정하십시오.
+# en:Frame value to check the node. If game performance is degraded, increase the value.
+const frame_interval_initial_value:int = 1
+const order_frame_interval = 70
+
 # * is_auto_focus_pause
 # ja:LiveDebuggerをフォーカスしたときに自動的にゲームのSceneTreeをpausedにします
 # ko:LiveDebugger에 포커스를 맞추면 자동으로 게임의 SceneTree를 일시 중지합니다
 # en:When LiveDebugger is focused, automatically pause the SceneTree of the game
 const is_auto_focus_pause_initial_value:bool = true
-# * ignore_script_paths
-# ja:無視するスクリプトパス(*でワイルドカード指定可能)
-# ko:무시할 스크립트 경로 (*로 와일드 카드 지정 가능)
-# en:Ignore script paths (* can be wildcard)
-const ignore_script_paths_initial_value:Array = []
-# * is_add_debugger_to_autoload_singleton
-# ja:Autoloadシングルトンに Live Debugger ノードを追加するか
-# ko:Autoload 싱글톤에 Live Debugger 노드를 추가할 것인가
-# en:Whether to add the Live Debugger node to the Autoload singleton
-const is_add_debugger_to_autoload_singleton_initial_value:bool = true
+const order_is_auto_focus_pause = 80
+
 # * display_float_decimal
 # ja:floatの表示桁数
 # ko:float의 표시 자릿수
 # en:float display decimal
 const display_float_decimal_initial_value:int = 2
+const order_display_float_decimal = 90
+
+# Cate Editor
+
+# * is_output_console_log
+# ja:このアドオンがコンソールログに出力するか
+# ko:이 애드온이 콘솔 로그에 출력하는지 여부
+# en:Whether this add-on outputs to the console log
+const is_output_console_log_initial_value:bool = true
+const order_is_output_console_log = 100
+# * ignore_script_paths
+# ja:無視するスクリプトパス(*でワイルドカード指定可能)
+# ko:무시할 스크립트 경로 (*로 와일드 카드 지정 가능)
+# en:Ignore script paths (* can be wildcard)
+const ignore_script_paths_initial_value:Array = []
+const order_ignore_script_paths = 110
+# * is_add_debugger_to_autoload_singleton
+# ja:Autoloadシングルトンに Live Debugger ノードを追加するか
+# ko:Autoload 싱글톤에 Live Debugger 노드를 추가할 것인가
+# en:Whether to add the Live Debugger node to the Autoload singleton
+const is_add_debugger_to_autoload_singleton_initial_value:bool = true
+const order_is_add_debugger_to_autoload_singleton = 120
 # * is_update_when_save_external_data
 # ja:外部データ保存時に自動更新するか
 # ko:외부 데이터 저장시 자동 업데이트 여부
 # en:Whether to update automatically when saving external data
 const is_update_when_save_external_data_initial_value:bool = true
+const order_is_update_when_save_external_data = 130
 
 
 var before_is_add_debugger_to_autoload_singleton:bool
@@ -73,18 +121,152 @@ func _enter_tree() -> void:
 
 	var de = ""
 	if _is_ja:
-		de = "↑説明"
+		de = "↓説明"
 	elif _is_ko:
-		de = "↑설명"
+		de = "↓설명"
 	else:
-		de = "↑Description"
+		de = "↓Description"
+
+	# デバッガーのウィンドウの位置の種別
+	if not ProjectSettings.has_setting("godot_live_debugger/debugger_window/debugger_window_position_type"):
+		ProjectSettings.set("godot_live_debugger/debugger_window/debugger_window_position_type", debugger_window_position_type_initial_value)
+		ProjectSettings.set_initial_value("godot_live_debugger/debugger_window/debugger_window_position_type", debugger_window_position_type_initial_value)
+		ProjectSettings.set_order("godot_live_debugger/debugger_window/debugger_window_position_type", order_debugger_window_position_type + 1)
+		if _is_ja:
+			ProjectSettings.add_property_info({
+			"name": "godot_live_debugger/debugger_window/debugger_window_position_type",
+			"type": TYPE_INT,
+			"hint": PROPERTY_HINT_ENUM,
+			"hint_string": "ゲーム右隣接,ゲーム左隣接,画面右隣接,画面左隣接,絶対位置指定"
+			})
+		elif _is_ko:
+			ProjectSettings.add_property_info({
+			"name": "godot_live_debugger/debugger_window/debugger_window_position_type",
+			"type": TYPE_INT,
+			"hint": PROPERTY_HINT_ENUM,
+			"hint_string": "게임 오른쪽 인접,게임 왼쪽 인접,화면 오른쪽 인접,화면 왼쪽 인접,절대 위치 지정"
+			})
+		else:
+			ProjectSettings.add_property_info({
+			"name": "godot_live_debugger/debugger_window/debugger_window_position_type",
+			"type": TYPE_INT,
+			"hint": PROPERTY_HINT_ENUM,
+			"hint_string": "Game Window Right,Game Window Left,Screen Right,Screen Left, Absolute Position"
+			})
+		
+		var description = ""
+		if _is_ja:
+			description = "デバッガーのウィンドウの位置の種別"
+		elif _is_ko:
+			description = "디버거 창 위치 유형"
+		else:
+			description = "Debugger window position type"
+		
+		ProjectSettings.set("godot_live_debugger/debugger_window/" + de + "_debugger_window_position_type", description)
+		ProjectSettings.set_initial_value("godot_live_debugger/debugger_window/" + de + "_debugger_window_position_type", description)
+		ProjectSettings.set_order("godot_live_debugger/debugger_window/" + de + "_debugger_window_position_type", order_debugger_window_position_type)
+		_add_description_prop("godot_live_debugger/debugger_window/" + de + "_debugger_window_position_type")
+		ProjectSettings.save()
+
+	# デバッガーのウィンドウの高さをモニターの高さに合わせるか
+	if not ProjectSettings.has_setting("godot_live_debugger/debugger_window/is_debugger_window_height_adjust_monitor_height"):
+		ProjectSettings.set("godot_live_debugger/debugger_window/is_debugger_window_height_adjust_monitor_height", is_debugger_window_height_adjust_monitor_height_initial_value)
+		ProjectSettings.set_initial_value("godot_live_debugger/debugger_window/is_debugger_window_height_adjust_monitor_height", is_debugger_window_height_adjust_monitor_height_initial_value)
+		ProjectSettings.set_order("godot_live_debugger/debugger_window/is_debugger_window_height_adjust_monitor_height", order_is_debugger_window_height_adjust_monitor_height + 1)
+		ProjectSettings.add_property_info({
+		"name": "godot_live_debugger/debugger_window/is_debugger_window_height_adjust_monitor_height",
+		"type": TYPE_BOOL
+		})
+		var description = ""
+		if _is_ja:
+			description = "デバッガーのウィンドウの高さをモニターの高さに合わせるか"
+		elif _is_ko:
+			description = "디버거 창 높이를 모니터 높이에 맞추시겠습니까?"
+			description = "adjust the height of the debugger window to the height of the monitor?"
+		
+		ProjectSettings.set("godot_live_debugger/debugger_window/" + de + "_is_debugger_window_height_adjust_monitor_height", description)
+		ProjectSettings.set_initial_value("godot_live_debugger/debugger_window/" + de + "_is_debugger_window_height_adjust_monitor_height", description)
+		ProjectSettings.set_order("godot_live_debugger/debugger_window/" + de + "_is_debugger_window_height_adjust_monitor_height", order_is_debugger_window_height_adjust_monitor_height)
+		_add_description_prop("godot_live_debugger/debugger_window/" + de + "_is_debugger_window_height_adjust_monitor_height")
+		ProjectSettings.save()
+
+	# デバッガーのウィンドウの位置のオフセット（位置をずらす）
+	if not ProjectSettings.has_setting("godot_live_debugger/debugger_window/debugger_window_position_offset"):
+		ProjectSettings.set("godot_live_debugger/debugger_window/debugger_window_position_offset", debugger_window_position_offset_initial_value)
+		ProjectSettings.set_initial_value("godot_live_debugger/debugger_window/debugger_window_position_offset", debugger_window_position_offset_initial_value)
+		ProjectSettings.set_order("godot_live_debugger/debugger_window/debugger_window_position_offset", order_debugger_window_position_offset + 1)
+		ProjectSettings.add_property_info({
+		"name": "godot_live_debugger/debugger_window/debugger_window_position_offset",
+		"type": TYPE_VECTOR2I
+		})
+		var description = ""
+		if _is_ja:
+			description = "デバッガーのウィンドウの位置のオフセット（位置をずらす）"
+		elif _is_ko:
+			description = "디버거 창 위치 오프셋"
+		else:
+			description = "Debugger window position offset"
+		
+		ProjectSettings.set("godot_live_debugger/debugger_window/" + de + "_debugger_window_position_offset", description)
+		ProjectSettings.set_initial_value("godot_live_debugger/debugger_window/" + de + "_debugger_window_position_offset", description)
+		ProjectSettings.set_order("godot_live_debugger/debugger_window/" + de + "_debugger_window_position_offset", order_debugger_window_position_offset)
+		_add_description_prop("godot_live_debugger/debugger_window/" + de + "_debugger_window_position_offset")
+		ProjectSettings.save()
+
+	# デバッガーのウィンドウのサイズ
+	if not ProjectSettings.has_setting("godot_live_debugger/debugger_window/debugger_window_size"):
+		ProjectSettings.set("godot_live_debugger/debugger_window/debugger_window_size", debugger_window_size_initial_value)
+		ProjectSettings.set_initial_value("godot_live_debugger/debugger_window/debugger_window_size", debugger_window_size_initial_value)
+		ProjectSettings.set_order("godot_live_debugger/debugger_window/debugger_window_size", order_debugger_window_size + 1)
+		ProjectSettings.add_property_info({
+		"name": "godot_live_debugger/debugger_window/debugger_window_size",
+		"type": TYPE_VECTOR2I
+		})
+		var description = ""
+		if _is_ja:
+			description = "デバッガーのウィンドウのサイズ"
+		elif _is_ko:
+			description = "디버거 창 크기"
+		else:
+			description = "Debugger window size"
+		
+		ProjectSettings.set("godot_live_debugger/debugger_window/" + de + "_debugger_window_size", description)
+		ProjectSettings.set_initial_value("godot_live_debugger/debugger_window/" + de + "_debugger_window_size", description)
+		ProjectSettings.set_order("godot_live_debugger/debugger_window/" + de + "_debugger_window_size", order_debugger_window_size)
+		_add_description_prop("godot_live_debugger/debugger_window/" + de + "_debugger_window_size")
+		ProjectSettings.save()
+
+	# デバッガーのウィンドウの絶対位置
+	if not ProjectSettings.has_setting("godot_live_debugger/debugger_window/debugger_window_absolute_position"):
+		ProjectSettings.set("godot_live_debugger/debugger_window/debugger_window_absolute_position", debugger_window_absolute_position_initial_value)
+		ProjectSettings.set_initial_value("godot_live_debugger/debugger_window/debugger_window_absolute_position", debugger_window_absolute_position_initial_value)
+		ProjectSettings.set_order("godot_live_debugger/debugger_window/debugger_window_absolute_position", order_debugger_window_absolute_position + 1)
+		ProjectSettings.add_property_info({
+		"name": "godot_live_debugger/debugger_window/debugger_window_absolute_position",
+		"type": TYPE_VECTOR2I
+		})
+		var description = ""
+		if _is_ja:
+			description = "デバッガーのウィンドウの絶対位置"
+		elif _is_ko:
+			description = "디버거 창의 절대 위치"
+		else:
+			description = "Absolute position of the debugger window"
+		
+		ProjectSettings.set("godot_live_debugger/debugger_window/" + de + "_debugger_window_absolute_position", description)
+		ProjectSettings.set_initial_value("godot_live_debugger/debugger_window/" + de + "_debugger_window_absolute_position", description)
+		ProjectSettings.set_order("godot_live_debugger/debugger_window/" + de + "_debugger_window_absolute_position", order_debugger_window_absolute_position)
+		_add_description_prop("godot_live_debugger/debugger_window/" + de + "_debugger_window_absolute_position")
+		ProjectSettings.save()
+
 
 	# 最前面
-	if not ProjectSettings.has_setting("godot_live_debugger/always_on_top"):
-		ProjectSettings.set("godot_live_debugger/always_on_top", always_on_top_initial_value)
-		ProjectSettings.set_initial_value("godot_live_debugger/always_on_top", always_on_top_initial_value)
+	if not ProjectSettings.has_setting("godot_live_debugger/debugger_window/always_on_top"):
+		ProjectSettings.set("godot_live_debugger/debugger_window/always_on_top", always_on_top_initial_value)
+		ProjectSettings.set_initial_value("godot_live_debugger/debugger_window/always_on_top", always_on_top_initial_value)
+		ProjectSettings.set_order("godot_live_debugger/debugger_window/always_on_top", order_always_on_top + 1)
 		ProjectSettings.add_property_info({
-		"name": "godot_live_debugger/always_on_top",
+		"name": "godot_live_debugger/debugger_window/always_on_top",
 		"type": TYPE_BOOL,
 		#"hint": PROPERTY_HINT_TYPE_STRING,
 		#"hint_string": "test str"
@@ -97,17 +279,19 @@ func _enter_tree() -> void:
 		else:
 			description = "Always display the LiveDebugger window on top."
 		
-		ProjectSettings.set("godot_live_debugger/" + de + "_always_on_top", description)
-		ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_always_on_top", description)
-		_add_description_prop("godot_live_debugger/" + de + "_always_on_top")
+		ProjectSettings.set("godot_live_debugger/debugger_window/" + de + "_always_on_top", description)
+		ProjectSettings.set_initial_value("godot_live_debugger/debugger_window/" + de + "_always_on_top", description)
+		ProjectSettings.set_order("godot_live_debugger/debugger_window/" + de + "_always_on_top", order_always_on_top)
+		_add_description_prop("godot_live_debugger/debugger_window/" + de + "_always_on_top")
 		ProjectSettings.save()
 	
 	# フォーカス時に自動ポーズ
-	if not ProjectSettings.has_setting("godot_live_debugger/is_auto_focus_pause"):
-		ProjectSettings.set("godot_live_debugger/is_auto_focus_pause", is_auto_focus_pause_initial_value)
-		ProjectSettings.set_initial_value("godot_live_debugger/is_auto_focus_pause", is_auto_focus_pause_initial_value)
+	if not ProjectSettings.has_setting("godot_live_debugger/debugger/is_auto_focus_pause"):
+		ProjectSettings.set("godot_live_debugger/debugger/is_auto_focus_pause", is_auto_focus_pause_initial_value)
+		ProjectSettings.set_initial_value("godot_live_debugger/debugger/is_auto_focus_pause", is_auto_focus_pause_initial_value)
+		ProjectSettings.set_order("godot_live_debugger/debugger/is_auto_focus_pause", order_is_auto_focus_pause + 1)
 		ProjectSettings.add_property_info({
-		"name": "godot_live_debugger/is_auto_focus_pause",
+		"name": "godot_live_debugger/debugger/is_auto_focus_pause",
 		"type": TYPE_BOOL
 		})
 		var description = ""
@@ -118,17 +302,19 @@ func _enter_tree() -> void:
 		else:
 			description = "When LiveDebugger is focused, automatically pause the SceneTree of the game"
 		
-		ProjectSettings.set("godot_live_debugger/" + de + "_is_auto_focus_pause", description)
-		ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_is_auto_focus_pause", description)
-		_add_description_prop("godot_live_debugger/" + de + "_is_auto_focus_pause")
+		ProjectSettings.set("godot_live_debugger/debugger/" + de + "_is_auto_focus_pause", description)
+		ProjectSettings.set_initial_value("godot_live_debugger/debugger/" + de + "_is_auto_focus_pause", description)
+		ProjectSettings.set_order("godot_live_debugger/debugger/" + de + "_is_auto_focus_pause", order_is_auto_focus_pause)
+		_add_description_prop("godot_live_debugger/debugger/" + de + "_is_auto_focus_pause")
 		ProjectSettings.save()
 
 	# フレーム間隔
-	if not ProjectSettings.has_setting("godot_live_debugger/frame_interval"):
-		ProjectSettings.set("godot_live_debugger/frame_interval", frame_interval_initial_value)
-		ProjectSettings.set_initial_value("godot_live_debugger/frame_interval", frame_interval_initial_value)
+	if not ProjectSettings.has_setting("godot_live_debugger/debugger/frame_interval"):
+		ProjectSettings.set("godot_live_debugger/debugger/frame_interval", frame_interval_initial_value)
+		ProjectSettings.set_initial_value("godot_live_debugger/debugger/frame_interval", frame_interval_initial_value)
+		ProjectSettings.set_order("godot_live_debugger/debugger/frame_interval", order_frame_interval + 1)
 		ProjectSettings.add_property_info({
-		"name": "godot_live_debugger/frame_interval",
+		"name": "godot_live_debugger/debugger/frame_interval",
 		"type": TYPE_INT,
 		"hint": PROPERTY_HINT_RANGE,
 		"hint_string": "1,60"
@@ -141,17 +327,19 @@ func _enter_tree() -> void:
 		else:
 			description = "Frame value to check the node. If game performance is degraded, increase the value."
 		
-		ProjectSettings.set("godot_live_debugger/" + de + "_frame_interval", description)
-		ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_frame_interval", description)
-		_add_description_prop("godot_live_debugger/" + de + "_frame_interval")
+		ProjectSettings.set("godot_live_debugger/debugger/" + de + "_frame_interval", description)
+		ProjectSettings.set_initial_value("godot_live_debugger/debugger/" + de + "_frame_interval", description)
+		ProjectSettings.set_order("godot_live_debugger/debugger/" + de + "_frame_interval", order_frame_interval)
+		_add_description_prop("godot_live_debugger/debugger/" + de + "_frame_interval")
 		ProjectSettings.save()
 
 	# コンソールログ
-	if not ProjectSettings.has_setting("godot_live_debugger/is_output_console_log"):
-		ProjectSettings.set("godot_live_debugger/is_output_console_log", is_output_console_log_initial_value)
-		ProjectSettings.set_initial_value("godot_live_debugger/is_output_console_log", is_output_console_log_initial_value)
+	if not ProjectSettings.has_setting("godot_live_debugger/editor/is_output_console_log"):
+		ProjectSettings.set("godot_live_debugger/editor/is_output_console_log", is_output_console_log_initial_value)
+		ProjectSettings.set_initial_value("godot_live_debugger/editor/is_output_console_log", is_output_console_log_initial_value)
+		ProjectSettings.set_order("godot_live_debugger/editor/is_output_console_log", order_is_output_console_log + 1)
 		ProjectSettings.add_property_info({
-		"name": "godot_live_debugger/is_output_console_log",
+		"name": "godot_live_debugger/editor/is_output_console_log",
 		"type": TYPE_BOOL
 		})
 		var description = ""
@@ -162,18 +350,20 @@ func _enter_tree() -> void:
 		else:
 			description = "Whether this add-on outputs to the console log"
 		
-		ProjectSettings.set("godot_live_debugger/" + de + "_is_output_console_log", description)
-		ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_is_output_console_log", description)
-		_add_description_prop("godot_live_debugger/" + de + "_is_output_console_log")
+		ProjectSettings.set("godot_live_debugger/editor/" + de + "_is_output_console_log", description)
+		ProjectSettings.set_initial_value("godot_live_debugger/editor/" + de + "_is_output_console_log", description)
+		ProjectSettings.set_order("godot_live_debugger/editor/" + de + "_is_output_console_log", order_is_output_console_log)
+		_add_description_prop("godot_live_debugger/editor/" + de + "_is_output_console_log")
 		ProjectSettings.save()
-	_is_output_console_log = ProjectSettings.get_setting("godot_live_debugger/is_output_console_log") as bool
+	_is_output_console_log = ProjectSettings.get_setting("godot_live_debugger/editor/is_output_console_log") as bool
 	
 	# 無視するスクリプトパス
-	if not ProjectSettings.has_setting("godot_live_debugger/ignore_script_paths"):
-		ProjectSettings.set("godot_live_debugger/ignore_script_paths", ignore_script_paths_initial_value)
-		ProjectSettings.set_initial_value("godot_live_debugger/ignore_script_paths", ignore_script_paths_initial_value)
+	if not ProjectSettings.has_setting("godot_live_debugger/editor/ignore_script_paths"):
+		ProjectSettings.set("godot_live_debugger/editor/ignore_script_paths", ignore_script_paths_initial_value)
+		ProjectSettings.set_initial_value("godot_live_debugger/editor/ignore_script_paths", ignore_script_paths_initial_value)
+		ProjectSettings.set_order("godot_live_debugger/editor/ignore_script_paths", order_ignore_script_paths + 1)
 		ProjectSettings.add_property_info({
-		"name": "godot_live_debugger/ignore_script_paths",
+		"name": "godot_live_debugger/editor/ignore_script_paths",
 		"type": TYPE_ARRAY,
 		"hint": PROPERTY_HINT_ARRAY_TYPE,
 		"hint_string": "String"
@@ -186,17 +376,19 @@ func _enter_tree() -> void:
 		else:
 			description = "Ignore script paths (* can be wildcard)"
 		
-		ProjectSettings.set("godot_live_debugger/" + de + "_ignore_script_paths", description)
-		ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_ignore_script_paths", description)
-		_add_description_prop("godot_live_debugger/" + de + "_ignore_script_paths")
+		ProjectSettings.set("godot_live_debugger/editor/" + de + "_ignore_script_paths", description)
+		ProjectSettings.set_initial_value("godot_live_debugger/editor/" + de + "_ignore_script_paths", description)
+		ProjectSettings.set_order("godot_live_debugger/editor/" + de + "_ignore_script_paths", order_ignore_script_paths)
+		_add_description_prop("godot_live_debugger/editor/" + de + "_ignore_script_paths")
 		ProjectSettings.save()
 
 	# Autoloadシングルトンにデバッガを追加するか
-	if not ProjectSettings.has_setting("godot_live_debugger/is_add_debugger_to_autoload_singleton"):
-		ProjectSettings.set("godot_live_debugger/is_add_debugger_to_autoload_singleton", is_add_debugger_to_autoload_singleton_initial_value)
-		ProjectSettings.set_initial_value("godot_live_debugger/is_add_debugger_to_autoload_singleton", is_add_debugger_to_autoload_singleton_initial_value)
+	if not ProjectSettings.has_setting("godot_live_debugger/editor/is_add_debugger_to_autoload_singleton"):
+		ProjectSettings.set("godot_live_debugger/editor/is_add_debugger_to_autoload_singleton", is_add_debugger_to_autoload_singleton_initial_value)
+		ProjectSettings.set_initial_value("godot_live_debugger/editor/is_add_debugger_to_autoload_singleton", is_add_debugger_to_autoload_singleton_initial_value)
+		ProjectSettings.set_order("godot_live_debugger/editor/is_add_debugger_to_autoload_singleton", order_is_add_debugger_to_autoload_singleton + 1)
 		ProjectSettings.add_property_info({
-			"name": "godot_live_debugger/is_add_debugger_to_autoload_singleton",
+			"name": "godot_live_debugger/editor/is_add_debugger_to_autoload_singleton",
 			"type": TYPE_BOOL
 		})
 		var description = ""
@@ -207,19 +399,21 @@ func _enter_tree() -> void:
 		else:
 			description = "Whether to add the Live Debugger node to the Autoload singleton"
 
-		ProjectSettings.set("godot_live_debugger/" + de + "_is_add_debugger_to_autoload_singleton", description)
-		ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_is_add_debugger_to_autoload_singleton", description)
-		_add_description_prop("godot_live_debugger/" + de + "_is_add_debugger_to_autoload_singleton")
+		ProjectSettings.set("godot_live_debugger/editor/" + de + "_is_add_debugger_to_autoload_singleton", description)
+		ProjectSettings.set_initial_value("godot_live_debugger/editor/" + de + "_is_add_debugger_to_autoload_singleton", description)
+		ProjectSettings.set_order("godot_live_debugger/editor/" + de + "_is_add_debugger_to_autoload_singleton", order_is_add_debugger_to_autoload_singleton)
+		_add_description_prop("godot_live_debugger/editor/" + de + "_is_add_debugger_to_autoload_singleton")
 		
 		add_autoload_singleton("LiveDebugger", NODE_LIVE_DEBUGGER_TSCN_PATH)#initial_value
 		
 		ProjectSettings.save()
 		
-	if not ProjectSettings.has_setting("godot_live_debugger/display_float_decimal"):
-		ProjectSettings.set("godot_live_debugger/display_float_decimal", display_float_decimal_initial_value)
-		ProjectSettings.set_initial_value("godot_live_debugger/display_float_decimal", display_float_decimal_initial_value)
+	if not ProjectSettings.has_setting("godot_live_debugger/debugger/display_float_decimal"):
+		ProjectSettings.set("godot_live_debugger/debugger/display_float_decimal", display_float_decimal_initial_value)
+		ProjectSettings.set_initial_value("godot_live_debugger/debugger/display_float_decimal", display_float_decimal_initial_value)
+		ProjectSettings.set_order("godot_live_debugger/debugger/display_float_decimal", order_display_float_decimal + 1)
 		ProjectSettings.add_property_info({
-			"name": "godot_live_debugger/display_float_decimal",
+			"name": "godot_live_debugger/debugger/display_float_decimal",
 			"type": TYPE_INT,
 			"hint": PROPERTY_HINT_RANGE,
 			"hint_string": "0,10"
@@ -231,16 +425,18 @@ func _enter_tree() -> void:
 			description = "float의 표시 자릿수"
 		
 		if _is_ja or _is_ko:
-			ProjectSettings.set("godot_live_debugger/" + de + "_display_float_decimal", description)
-			ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_display_float_decimal", description)
-			_add_description_prop("godot_live_debugger/" + de + "_display_float_decimal")
+			ProjectSettings.set("godot_live_debugger/debugger/" + de + "_display_float_decimal", description)
+			ProjectSettings.set_initial_value("godot_live_debugger/debugger/" + de + "_display_float_decimal", description)
+			ProjectSettings.set_order("godot_live_debugger/debugger/" + de + "_display_float_decimal", order_display_float_decimal)
+			_add_description_prop("godot_live_debugger/debugger/" + de + "_display_float_decimal")
 		ProjectSettings.save()
 
-	if not ProjectSettings.has_setting("godot_live_debugger/is_update_when_save_external_data"):
-		ProjectSettings.set("godot_live_debugger/is_update_when_save_external_data", is_update_when_save_external_data_initial_value)
-		ProjectSettings.set_initial_value("godot_live_debugger/is_update_when_save_external_data", is_update_when_save_external_data_initial_value)
+	if not ProjectSettings.has_setting("godot_live_debugger/editor/is_update_when_save_external_data"):
+		ProjectSettings.set("godot_live_debugger/editor/is_update_when_save_external_data", is_update_when_save_external_data_initial_value)
+		ProjectSettings.set_initial_value("godot_live_debugger/editor/is_update_when_save_external_data", is_update_when_save_external_data_initial_value)
+		ProjectSettings.set_order("godot_live_debugger/editor/is_update_when_save_external_data", order_is_update_when_save_external_data + 1)
 		ProjectSettings.add_property_info({
-			"name": "godot_live_debugger/is_update_when_save_external_data",
+			"name": "godot_live_debugger/editor/is_update_when_save_external_data",
 			"type": TYPE_BOOL
 		})
 		var description = ""
@@ -250,12 +446,13 @@ func _enter_tree() -> void:
 			description = "외부 데이터 저장시 자동 업데이트 여부"
 		
 		if _is_ja or _is_ko:
-			ProjectSettings.set("godot_live_debugger/" + de + "_is_update_when_save_external_data", description)
-			ProjectSettings.set_initial_value("godot_live_debugger/" + de + "_is_update_when_save_external_data", description)
-			_add_description_prop("godot_live_debugger/" + de + "_is_update_when_save_external_data")
+			ProjectSettings.set("godot_live_debugger/editor/" + de + "_is_update_when_save_external_data", description)
+			ProjectSettings.set_initial_value("godot_live_debugger/editor/" + de + "_is_update_when_save_external_data", description)
+			ProjectSettings.set_order("godot_live_debugger/editor/" + de + "_is_update_when_save_external_data", order_is_update_when_save_external_data)
+			_add_description_prop("godot_live_debugger/editor/" + de + "_is_update_when_save_external_data")
 		ProjectSettings.save()
 	
-	before_is_add_debugger_to_autoload_singleton = ProjectSettings.get_setting("godot_live_debugger/is_add_debugger_to_autoload_singleton")
+	before_is_add_debugger_to_autoload_singleton = ProjectSettings.get_setting("godot_live_debugger/editor/is_add_debugger_to_autoload_singleton")
 
 func _add_description_prop(disp_prop_name:String):
 	ProjectSettings.add_property_info({
@@ -265,9 +462,9 @@ func _add_description_prop(disp_prop_name:String):
 
 func _on_changed_project_settings():
 	# Autoloadへの登録の切り替え
-	if not ProjectSettings.has_setting("godot_live_debugger/is_add_debugger_to_autoload_singleton"):
-		ProjectSettings.set_setting("godot_live_debugger/is_add_debugger_to_autoload_singleton", false)
-	var current_is_add_debugger_to_autoload_singleton = ProjectSettings.get_setting("godot_live_debugger/is_add_debugger_to_autoload_singleton")
+	if not ProjectSettings.has_setting("godot_live_debugger/editor/is_add_debugger_to_autoload_singleton"):
+		ProjectSettings.set_setting("godot_live_debugger/editor/is_add_debugger_to_autoload_singleton", false)
+	var current_is_add_debugger_to_autoload_singleton = ProjectSettings.get_setting("godot_live_debugger/editor/is_add_debugger_to_autoload_singleton")
 	
 	if before_is_add_debugger_to_autoload_singleton != current_is_add_debugger_to_autoload_singleton:
 		before_is_add_debugger_to_autoload_singleton = current_is_add_debugger_to_autoload_singleton
@@ -283,6 +480,42 @@ func _exit_tree() -> void:
 	remove_tool_menu_item("Update Debug Informations")
 	if ProjectSettings.has_setting("autoload/LiveDebugger"):
 		remove_autoload_singleton("LiveDebugger")
+	
+	var de = ""
+	if _is_ja:
+		de = "↓説明"
+	elif _is_ko:
+		de = "↓설명"
+	else:
+		de = "↓Description"
+	
+	ProjectSettings.clear("godot_live_debugger/debugger_window/debugger_window_position_type")
+	ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_debugger_window_position_type")
+	ProjectSettings.clear("godot_live_debugger/debugger_window/is_debugger_window_height_adjust_monitor_height")
+	ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_is_debugger_window_height_adjust_monitor_height")
+	ProjectSettings.clear("godot_live_debugger/debugger_window/debugger_window_position_offset")
+	ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_debugger_window_position_offset")
+	ProjectSettings.clear("godot_live_debugger/debugger_window/debugger_window_size")
+	ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_debugger_window_size")
+	ProjectSettings.clear("godot_live_debugger/debugger_window/debugger_window_absolute_position")
+	ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_debugger_window_absolute_position")
+	ProjectSettings.clear("godot_live_debugger/debugger_window/always_on_top")
+	ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_always_on_top")
+	ProjectSettings.clear("godot_live_debugger/debugger/is_auto_focus_pause")
+	ProjectSettings.clear("godot_live_debugger/debugger/" + de + "_is_auto_focus_pause")
+	ProjectSettings.clear("godot_live_debugger/debugger/frame_interval")
+	ProjectSettings.clear("godot_live_debugger/debugger/" + de + "_frame_interval")
+	ProjectSettings.clear("godot_live_debugger/editor/is_output_console_log")
+	ProjectSettings.clear("godot_live_debugger/editor/" + de + "_is_output_console_log")
+	ProjectSettings.clear("godot_live_debugger/editor/ignore_script_paths")
+	ProjectSettings.clear("godot_live_debugger/editor/" + de + "_ignore_script_paths")
+	ProjectSettings.clear("godot_live_debugger/editor/is_add_debugger_to_autoload_singleton")
+	ProjectSettings.clear("godot_live_debugger/editor/" + de + "_is_add_debugger_to_autoload_singleton")
+	ProjectSettings.clear("godot_live_debugger/debugger/display_float_decimal")
+	ProjectSettings.clear("godot_live_debugger/editor/" + de + "_display_float_decimal")
+	ProjectSettings.clear("godot_live_debugger/editor/is_update_when_save_external_data")
+	ProjectSettings.clear("godot_live_debugger/editor/" + de + "_is_update_when_save_external_data")
+	return
 
 func update():
 	var is_ja:bool = EditorInterface.get_editor_settings()\
