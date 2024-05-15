@@ -16,6 +16,10 @@ You can check node status such as game progress without interfering with game de
 
 ![image](https://github.com/folt-a/godot-live-debugger/assets/32963227/785a2186-7db4-4932-88a1-0e0c2a0cfc9f)
 
+
+https://github.com/folt-a/godot-live-debugger/assets/32963227/34007610-16cc-4119-96eb-e75c755f1413
+
+
 ## Installation and Usage
 
 1. Download or clone the repository to your local PC.
@@ -260,6 +264,8 @@ If this addon helped you develop your game project, please donate.
 操作を妨げずにゲーム進行などの変数を確認できます。
 
 ![image](https://github.com/folt-a/godot-live-debugger/assets/32963227/479576e4-a448-4df9-9853-03a0d39c6f79)
+
+https://github.com/folt-a/godot-live-debugger/assets/32963227/34007610-16cc-4119-96eb-e75c755f1413
 
 ## インストール、使い方
 
@@ -509,6 +515,8 @@ MITライセンスです。
 조작을 방해하지 않고 게임 진행 등의 변수를 확인할 수 있습니다.
 
 ![image](https://github.com/folt-a/godot-live-debugger/assets/32963227/01bfb9a3-9af8-45d9-aefc-501c33f74f75)
+
+https://github.com/folt-a/godot-live-debugger/assets/32963227/34007610-16cc-4119-96eb-e75c755f1413
 
 ## 설치 및 사용 방법
 
