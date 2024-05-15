@@ -10,6 +10,8 @@ It updates in real-time when you run the game window, so you can edit it.
 
 You can check node status such as game progress without interfering with game debug play.
 
+![image](https://github.com/folt-a/godot-live-debugger/assets/32963227/785a2186-7db4-4932-88a1-0e0c2a0cfc9f)
+
 ## Installation and Usage
 
 1. Download or clone the repository to your local PC.
