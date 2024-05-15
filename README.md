@@ -1,20 +1,246 @@
-# godot-live-debugger
+# Live Debugger
 
-This is a Godot addon in development.
+Live Debugger is Godot 4 addon.
 
-これは開発中のGodotアドオンです。
+A high-level window for debugging game status. 
 
-READMEは書きかけです。
+You can monitor and edit the properties of nodes you want to display. 
 
-README is a work in progress.
+It updates in real-time when you run the game window, so you can edit it.
 
-A high-level window for debugging game status.
+You can check node status such as game progress without interfering with game debug play.
 
-You can monitor the properties of the nodes you want to view and edit values.
+## Installation and Usage
 
-You can edit it as the game window updates in real time as you run it.
+1. Download or clone the repository to your local PC.
 
-You can check variables such as game progress without interfering with operations.
+2. Move/copy it to your Godot project so that it becomes addons/godot-live-debugger.
+
+3. In Godot, go to "Project Settings" → "Plugins" and check ✅ godot-live-debugger.
+
+4. The LiveDebugger scene is automatically registered in "AutoLoad".
+
+5. Set up the script of the node you want to monitor as shown below.
+
+6. Launch the game.
+
+```gdscript
+
+# Property directly below #@Debug will be monitored
+
+#@Debug
+var property_1:int = 300
+
+#---
+
+# function too.
+# Note that _process is called every frame.
+
+#@Debug
+func get_str():
+	return "abc"
+
+#---
+
+# alias name surrounded ''
+
+#@Debug'alias_name'
+var property_2:String = ""
+
+#@Debug「別名」
+
+#---
+
+# assign categories. Tree items can be collapsed. Tree Node.
+
+#@Debug(category_name)
+var property_3:Vector2 = Vector2.ZERO
+
+#---
+
+# Categories can be made into subcategories with /.
+
+#@Debug(cate1/nested_category2)
+var property_4:Vector3 = Vector3.ZERO
+
+#---
+
+# specify properties by property name
+
+#@Debug[position]
+
+#---
+
+# another node's properyy by property name.
+# However, it can only be monitored and cannot be edited.
+
+#@Debug[./ChildNode:position]
+
+# Internally, get_node() is used up to the : character, 
+# so % can also be used.
+
+#@Debug[%ChildNode:position]
+
+#---
+
+# You can assign colors for better readability using {}.
+
+#@Debug{#RED}
+var property_5:StringName = &""
+
+#@Debug{#f0f0f0}
+var property_6:bool = false
+
+#---
+
+
+# Multiple settings
+
+#@Debug(cate)'alias'{#RED}
+var property_7:int = 123
+
+#@Debug{#f0f0f0}
+var property_8:bool = false
+
+#---
+
+# function with #@Call instead of #@Debug, a button will appear.
+# when pressed, execute that function. It will not be monitored.
+# The result of the function return is displayed in the value.
+# You can also execute it by edit string as argument 1.
+
+#@Call
+func play() -> String:
+	animation_player.play()
+	return anim_name
+
+#@Call
+func play_animation(anim_name:StringName) -> String:
+	animation_player.play(anim_name)
+	return anim_name
+
+```
+
+## Project Settings
+
+### Debug Window
+
+* always_on_top
+
+Always display the debugger window on top
+
+* debugger_window_position_type
+
+- Adjacent to game on the right
+- Adjacent to game on the left
+- Adjacent to screen on the right
+- Adjacent to screen on the left
+- Absolute position
+
+* is_debugger_window_height_adjust_monitor_height
+
+Whether to adjust the height of the debugger window to the monitor height
+
+The window height will extend to the full monitor height.
+
+Ignores the Y value of debugger_window_size.
+
+If you lower the position by offsetting the Y value of debugger_window_position_offset, it will become smaller by that amount.
+
+Ignored when using absolute position.
+
+* debugger_window_position_offset
+
+Offset of the debugger window position (shift position)
+Shifts the window position.
+
+Ignored when using absolute position.
+
+*debugger_window_absolute_position
+
+Absolute position of the debugger window Only valid when using absolute position.
+
+In the case of multi-monitors, all monitor positions will affect it, so it tends to extend off the screen. Be careful.
+
+* debugger_window_size
+
+Size of the debugger window The Y value is ignored if is_debugger_window_height_adjust_monitor_height is on.
+
+## Debugger Settings
+
+* frame_interval
+
+Frame value for how often to check nodes.
+
+If performance drops, increase this value.
+
+Default:1, so every frame.
+
+* is_auto_focus_pause
+
+Automatically pauses the game's SceneTree when the debugger window is focused
+
+* display_float_decimal
+
+Limit on the number of decimal places displayed for floats.
+
+It's only for display, so if you input more digits and reflect it, it will be properly reflected. 
+
+The display digits are limited.
+
+Default:2 digits.
+
+1.123456 → Displayed as 1.12
+
+* is_output_console_log
+
+Whether this addon outputs logs to the console
+
+If off, this addon will not print.
+
+Logs will appear every time it checks all scripts to find targets when updating external data.
+
+* ignore_script_paths
+
+Script paths to ignore (* can be used for wildcard specification)
+
+* is_add_debugger_to_autoload_singleton
+
+Whether to add the Live Debugger node to "AutoLoad" (Autoload singleton)
+
+If on, it will be registered. If off, it will be unregistered.
+
+You can also add or remove it from the project's "AutoLoad".
+
+This addon will check all nodes regardless of where it is placed.
+
+If you want to check only specific scenes, you can also add the LiveDebugger.tscn scene as a node in the tree.
+
+* is_update_when_save_external_data
+
+Whether to automatically update when saving external data
+
+When external data is updated, it checks all scripts to find targets.
+
+It is called every time something is updated, so turn it off if it becomes low performance.
+
+In that case, execute "Project" → "Tools" → "Update LiveDebugger Data" instead.
+
+
+## Contributing
+Contributions are welcome! 
+
+If you have any suggestions, bug reports, or improvements, feel free to submit a pull request or open an issue on the repository.
+
+## License
+
+MIT License.
+
+# Donate
+
+If this addon helped you develop your game project, please donate.
+
+# Live Debugger 日本語README （Japanese translation README）
 
 ゲームステータスのデバッグのための高レベルウィンドウです。
 
@@ -24,12 +250,26 @@ You can check variables such as game progress without interfering with operation
 
 操作を妨げずにゲーム進行などの変数を確認できます。
 
-[https://x.com/Faultun/status/1790061378310385668](https://x.com/Faultun/status/1790061378310385668)
+## インストール、使い方
+
+1. downloadかGitのcloneをしてローカルPCに入れます。
+
+2. addons/godot-live-debugger となるようにあなたのGodotプロジェクトに移動/コピーします。
+
+3. Godot 「プロジェクト設定」→「プラグイン」で**godot-live-debugger**を✅します。
+
+4. 自動的に「自動読み込み」に **LiveDebugger** シーンが登録されています。
+
+5. ↓のように監視したいノードのスクリプトに設定をします。
+
+6. ゲームを起動します。
+
+
+## スクリプトへの設定
 
 ```gdscript
 
 # 特定のコメント #@Debug の直下のプロパティを監視対象にします
-# Monitor the property directly under the specific comment #@Debug
 
 #@Debug
 var property_1:int = 300
@@ -37,8 +277,6 @@ var property_1:int = 300
 #---
 
 # 関数を指定することもできます。_processで毎フレーム呼び出されるので注意。
-# You can also specify a function.
-# Note that _process is called every frame.
 
 #@Debug
 func get_str():
@@ -47,7 +285,6 @@ func get_str():
 #---
 
 # 「」か''で見やすいように表示のための名前をつけることもできます。
-# alias
 
 #@Debug'alias_name'
 var property_2:String = ""
@@ -57,7 +294,6 @@ var property_2:String = ""
 #---
 
 # カテゴリをつけることができます。ツリーアイテムの折りたたみができます。
-# add categories. Tree items can be folded/expand. Tree Node.
 
 #@Debug(category_name)
 var property_3:Vector2 = Vector2.ZERO
@@ -65,7 +301,6 @@ var property_3:Vector2 = Vector2.ZERO
 #---
 
 # カテゴリはスラッシュ/でサブカテゴリにできます。折りたたみ。
-# Categories can be made into subcategories with /.
 
 #@Debug(cate1/nested_category2)
 var property_4:Vector3 = Vector3.ZERO
@@ -73,21 +308,16 @@ var property_4:Vector3 = Vector3.ZERO
 #---
 
 # プロパティ名指定でプロパティを指定することもできます
-# You can also specify the property by specifying the property name.
 
 #@Debug[position]
 
 #---
 
 # プロパティ名指定で別のノードのプロパティを指定することもできます。ただし監視のみで編集不可能です。
-# You can also specify the property of another node by specifying the property name.
-# However, it can only be monitored and cannot be edited.
 
 #@Debug[./ChildNode:position]
 
 # 内部処理では:の前までをget_node()しているので%も使用できます。
-# In internal processing, get_node() is performed up to the point before :,
-# so % can also be used.
 
 #@Debug[%ChildNode:position]
 
@@ -116,10 +346,6 @@ var property_8:bool = false
 
 # #@Debugではなく #@Call で関数を指定すると、ボタンが表示され、押すとその関数を実行します。監視対象にはしません。
 # 関数のreturnの結果が値に表示されます。　引数1を値に入力して実行することもできます。
-# If you specify a function with #@Call instead of #@Debug, a button will appear and,
-# when pressed, execute that function. It will not be monitored.
-# The result of the function return is displayed in the value.
-# You can also execute it by entering argument 1 as the value.
 
 #@Call
 func play() -> String:
@@ -134,53 +360,126 @@ func play_animation(anim_name:StringName) -> String:
 
 ```
 
-# Project Settings
+## Project Settings プロジェクトの設定
 
-* is_output_console_log
-
-ja:このアドオンがコンソールログに出力するか  
-ko:이 애드온이 콘솔 로그에 출력하는지 여부  
-en:Whether this add-on outputs to the console log
-
-* frame_interval
- 
-ja:何フレームに一度ノードをチェックするかのフレーム値です。パフォーマンスが落ちる場合は値を大きくしてください。  
-ko:노드를 확인할 프레임 값입니다. 성능이 떨어지는 경우 값이 커지도록 설정하십시오.  
-en:Frame value to check the node. If game performance is degraded, increase the value.
+### Debug Window デバッグウィンドウの設定
 
 * always_on_top
 
-ja:常に最前面に表示  
-ko:항상 최상위에 표시  
-en:Always on top
+デバッガウィンドウで常に最前面に表示
+
+* debugger_window_position_type
+
+デバッガーのウィンドウの位置の種別
+
+- ゲーム右隣接
+- ゲーム左隣接
+- 画面右隣接
+- 画面左隣接
+- 絶対位置指定
+
+* is_debugger_window_height_adjust_monitor_height
+
+デバッガーのウィンドウの高さをモニターの高さに合わせるか
+
+ウィンドウの高さがモニターいっぱいまで伸びます。
+debugger_window_sizeのYを無視します。
+debugger_window_position_offsetのYをずらして位置を下げるとそのぶん小さくなります
+
+絶対位置指定の場合は無視されます。
+
+* debugger_window_position_offset
+
+デバッガーのウィンドウの位置のオフセット（位置をずらす）
+
+ウィンドウの位置をずらします。 
+
+絶対位置指定の場合は無視されます。
+
+* debugger_window_absolute_position
+
+デバッガーのウィンドウの絶対位置
+
+絶対位置指定の場合のみ有効です。
+
+マルチモニターの場合はすべてのモニター位置が影響するので、画面外に飛び出しがち。注意。
+
+* debugger_window_size
+
+デバッガーのウィンドウのサイズ
+
+is_debugger_window_height_adjust_monitor_heightがオンの場合はYは無視されます。
+
+### デバッガー設定
+
+* frame_interval
+ 
+何フレームに一度ノードをチェックするかのフレーム値です。
+
+パフォーマンスが落ちる場合は値を大きくしてください。  
+
+デフォルトは1なので毎フレームです。
 
 * is_auto_focus_pause
 
-ja:LiveDebuggerをフォーカスしたときに自動的にゲームのSceneTreeをpausedにします  
-ko:LiveDebugger에 포커스를 맞추면 자동으로 게임의 SceneTree를 일시 중지합니다  
-en:When LiveDebugger is focused, automatically pause the SceneTree of the game
-
-* ignore_script_paths
-
-ja:無視するスクリプトパス(*でワイルドカード指定可能)  
-ko:무시할 스크립트 경로 (*로 와일드 카드 지정 가능)  
-en:Ignore script paths (* can be wildcard)
-
-* is_add_debugger_to_autoload_singleton
-
-ja:Autoloadシングルトンに Live Debugger ノードを追加するか  
-ko:Autoload 싱글톤에 Live Debugger 노드를 추가할 것인가  
-en:Whether to add the Live Debugger node to the Autoload singleton
+デバッガーウィンドウをフォーカスしたときに自動的にゲームのSceneTreeをpausedにします  
 
 * display_float_decimal
 
-ja:floatの表示桁数  
-ko:float의 표시 자릿수  
-en:float display decimal
+floatの表示桁数の制限です。
+
+表示だけなので、それ以上の桁数を入力して反映させるとちゃんと反映されます。表示桁数は制限されます。
+
+デフォルトは2桁です。 1.123456 → 1.12　と表示されます
+
+* is_output_console_log
+
+このアドオンがコンソールログにログを出力するか  
+
+オフにするとこのアドオンはprintしなくなります。
+
+外部データ更新時に全スクリプトをチェックして対象を探すので、ログが毎回でます。
+
+* ignore_script_paths
+
+無視するスクリプトパス(*でワイルドカード指定可能)  
+
+* is_add_debugger_to_autoload_singleton
+
+「自動読み込み」（Autoloadシングルトン）に Live Debugger ノードを追加するか  
+
+オンにすると登録されます。オフにすると登録解除されます。
+
+プロジェクトの「自動読み込み」から追加削除してもかまいません。
+
+このアドオンはどこに置いてもすべてのノードをチェックします。
+
+特定のシーンだけチェックしたい場合は`LiveDebugger.tscn`シーンをノードとしてツリーに追加することもできます。
 
 * is_update_when_save_external_data
 
-ja:外部データ保存時に自動更新するか  
-ko:외부 데이터 저장시 자동 업데이트 여부  
-en:Whether to update automatically when saving external data
+外部データ保存時に自動更新するか  
 
+外部データ更新時に全スクリプトをチェックして対象を探します。
+
+なにか更新するたびに呼ばれてしまうので、重くなる場合はオフにしてください。
+
+その場合は、代わりに
+
+「プロジェクト」→「ツール」→「Update LiveDebugger Data」を実行してください。
+
+## Contributing
+
+要望・提案・バグレポートください。
+
+Issue, PullRequestなどお待ちしております。
+
+（全部対応できるとは限りません）
+
+## License
+
+MITライセンスです。
+
+# 寄付
+
+便利だなあとなったらどうぞお願いします

@@ -113,11 +113,54 @@ func _init():
 		.contains("ko")
 
 func _enter_tree() -> void:
-	add_tool_menu_item("Update Debug Informations", update)
+	add_tool_menu_item("Update LiveDebugger Data", update)
+	
+	# 使うアイコンをuserdirに投入
+	_add_user_dir_icon("MemberMethod")
+	_add_user_dir_icon("Callable")
+	_add_user_dir_icon("Play")
+	
+	_add_user_dir_icon("String")
+	_add_user_dir_icon("StringName")
+	_add_user_dir_icon("float")
+	_add_user_dir_icon("int")
+	_add_user_dir_icon("bool")
+	_add_user_dir_icon("Array")
+	_add_user_dir_icon("Dictionary")
+	_add_user_dir_icon("Object")
+	_add_user_dir_icon("Vector2")
+	_add_user_dir_icon("Vector2i")
+	_add_user_dir_icon("Vector3")
+	_add_user_dir_icon("Vector3i")
+	_add_user_dir_icon("Transform2D")
+	_add_user_dir_icon("Transform3D")
+	_add_user_dir_icon("NodePath")
+	_add_user_dir_icon("Rect2")
+	_add_user_dir_icon("Rect2i")
+	_add_user_dir_icon("Color")
+	
+	_add_user_dir_icon("GuiVisibilityVisible")
+	_add_user_dir_icon("GuiVisibilityHidden")
+	_add_user_dir_icon("Info")
+	
+	_add_user_dir_icon("Pause")
+	
+	_add_user_dir_icon("GuiTreeArrowDown")
+	_add_user_dir_icon("GuiTreeArrowRight")
 	
 	# プロジェクト設定変更をチェックする
 	if not ProjectSettings.settings_changed.is_connected(_on_changed_project_settings):
 		ProjectSettings.settings_changed.connect(_on_changed_project_settings)
+
+	if ProjectSettings.get_setting("display/window/subwindows/embed_subwindows"):
+		ProjectSettings.set_setting("display/window/subwindows/embed_subwindows", false)
+		if _is_output_console_log:
+			if _is_ja:
+				print_rich("[godot_live_debugger][color=LIME_GREEN][b]プロジェクト設定の「サブウィンドウを埋め込む」をオンにしました。[/b][/color]")
+			elif _is_ko:
+				printerr("[godot-live-debugger][color=LIME_GREEN][b]프로젝트 설정의 '서브 윈도우를 포함'을 켰습니다.[/b][/color]")
+			else:
+				printerr("[godot-live-debugger][color=LIME_GREEN][b]Turned on 'Embed Subwindows' in Project Settings.[/b][/color]")
 
 	var de = ""
 	if _is_ja:
@@ -477,44 +520,44 @@ func _save_external_data():
 	update()
 
 func _exit_tree() -> void:
-	remove_tool_menu_item("Update Debug Informations")
+	remove_tool_menu_item("Update LiveDebugger Data")
 	if ProjectSettings.has_setting("autoload/LiveDebugger"):
 		remove_autoload_singleton("LiveDebugger")
 	
-	var de = ""
-	if _is_ja:
-		de = "↓説明"
-	elif _is_ko:
-		de = "↓설명"
-	else:
-		de = "↓Description"
-	
-	ProjectSettings.clear("godot_live_debugger/debugger_window/debugger_window_position_type")
-	ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_debugger_window_position_type")
-	ProjectSettings.clear("godot_live_debugger/debugger_window/is_debugger_window_height_adjust_monitor_height")
-	ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_is_debugger_window_height_adjust_monitor_height")
-	ProjectSettings.clear("godot_live_debugger/debugger_window/debugger_window_position_offset")
-	ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_debugger_window_position_offset")
-	ProjectSettings.clear("godot_live_debugger/debugger_window/debugger_window_size")
-	ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_debugger_window_size")
-	ProjectSettings.clear("godot_live_debugger/debugger_window/debugger_window_absolute_position")
-	ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_debugger_window_absolute_position")
-	ProjectSettings.clear("godot_live_debugger/debugger_window/always_on_top")
-	ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_always_on_top")
-	ProjectSettings.clear("godot_live_debugger/debugger/is_auto_focus_pause")
-	ProjectSettings.clear("godot_live_debugger/debugger/" + de + "_is_auto_focus_pause")
-	ProjectSettings.clear("godot_live_debugger/debugger/frame_interval")
-	ProjectSettings.clear("godot_live_debugger/debugger/" + de + "_frame_interval")
-	ProjectSettings.clear("godot_live_debugger/editor/is_output_console_log")
-	ProjectSettings.clear("godot_live_debugger/editor/" + de + "_is_output_console_log")
-	ProjectSettings.clear("godot_live_debugger/editor/ignore_script_paths")
-	ProjectSettings.clear("godot_live_debugger/editor/" + de + "_ignore_script_paths")
-	ProjectSettings.clear("godot_live_debugger/editor/is_add_debugger_to_autoload_singleton")
-	ProjectSettings.clear("godot_live_debugger/editor/" + de + "_is_add_debugger_to_autoload_singleton")
-	ProjectSettings.clear("godot_live_debugger/debugger/display_float_decimal")
-	ProjectSettings.clear("godot_live_debugger/editor/" + de + "_display_float_decimal")
-	ProjectSettings.clear("godot_live_debugger/editor/is_update_when_save_external_data")
-	ProjectSettings.clear("godot_live_debugger/editor/" + de + "_is_update_when_save_external_data")
+	#var de = ""
+	#if _is_ja:
+		#de = "↓説明"
+	#elif _is_ko:
+		#de = "↓설명"
+	#else:
+		#de = "↓Description"
+	#
+	#ProjectSettings.clear("godot_live_debugger/debugger_window/debugger_window_position_type")
+	#ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_debugger_window_position_type")
+	#ProjectSettings.clear("godot_live_debugger/debugger_window/is_debugger_window_height_adjust_monitor_height")
+	#ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_is_debugger_window_height_adjust_monitor_height")
+	#ProjectSettings.clear("godot_live_debugger/debugger_window/debugger_window_position_offset")
+	#ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_debugger_window_position_offset")
+	#ProjectSettings.clear("godot_live_debugger/debugger_window/debugger_window_size")
+	#ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_debugger_window_size")
+	#ProjectSettings.clear("godot_live_debugger/debugger_window/debugger_window_absolute_position")
+	#ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_debugger_window_absolute_position")
+	#ProjectSettings.clear("godot_live_debugger/debugger_window/always_on_top")
+	#ProjectSettings.clear("godot_live_debugger/debugger_window/" + de + "_always_on_top")
+	#ProjectSettings.clear("godot_live_debugger/debugger/is_auto_focus_pause")
+	#ProjectSettings.clear("godot_live_debugger/debugger/" + de + "_is_auto_focus_pause")
+	#ProjectSettings.clear("godot_live_debugger/debugger/frame_interval")
+	#ProjectSettings.clear("godot_live_debugger/debugger/" + de + "_frame_interval")
+	#ProjectSettings.clear("godot_live_debugger/editor/is_output_console_log")
+	#ProjectSettings.clear("godot_live_debugger/editor/" + de + "_is_output_console_log")
+	#ProjectSettings.clear("godot_live_debugger/editor/ignore_script_paths")
+	#ProjectSettings.clear("godot_live_debugger/editor/" + de + "_ignore_script_paths")
+	#ProjectSettings.clear("godot_live_debugger/editor/is_add_debugger_to_autoload_singleton")
+	#ProjectSettings.clear("godot_live_debugger/editor/" + de + "_is_add_debugger_to_autoload_singleton")
+	#ProjectSettings.clear("godot_live_debugger/debugger/display_float_decimal")
+	#ProjectSettings.clear("godot_live_debugger/editor/" + de + "_display_float_decimal")
+	#ProjectSettings.clear("godot_live_debugger/editor/is_update_when_save_external_data")
+	#ProjectSettings.clear("godot_live_debugger/editor/" + de + "_is_update_when_save_external_data")
 	return
 
 func update():
@@ -524,41 +567,6 @@ func update():
 	var is_ko:bool = EditorInterface.get_editor_settings()\
 		.get_setting("interface/editor/editor_language")\
 		.contains("ko")
-
-	# 使うアイコンをuserdirに投入
-	_add_user_dir_icon("MemberMethod")
-	_add_user_dir_icon("Callable")
-	_add_user_dir_icon("Play")
-	
-	_add_user_dir_icon("String")
-	_add_user_dir_icon("StringName")
-	_add_user_dir_icon("float")
-	_add_user_dir_icon("int")
-	_add_user_dir_icon("bool")
-	_add_user_dir_icon("Array")
-	_add_user_dir_icon("Dictionary")
-	_add_user_dir_icon("Object")
-	_add_user_dir_icon("Vector2")
-	_add_user_dir_icon("Vector2i")
-	_add_user_dir_icon("Vector3")
-	_add_user_dir_icon("Vector3i")
-	_add_user_dir_icon("Transform2D")
-	_add_user_dir_icon("Transform3D")
-	_add_user_dir_icon("NodePath")
-	_add_user_dir_icon("Rect2")
-	_add_user_dir_icon("Rect2i")
-	_add_user_dir_icon("Color")
-	
-	_add_user_dir_icon("GuiVisibilityVisible")
-	_add_user_dir_icon("GuiVisibilityHidden")
-	_add_user_dir_icon("Info")
-	
-	_add_user_dir_icon("Pause")
-	
-	_add_user_dir_icon("GuiTreeArrowDown")
-	_add_user_dir_icon("GuiTreeArrowRight")
-	
-
 
 	#バッチ処理で全てのスクリプトを走査する
 	#「ツール」から実行する。
