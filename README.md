@@ -1,8 +1,8 @@
 # Live Debugger
 
-[日本語READMEはこちら japanese readme is here](https://github.com/folt-a/godot-live-debugger#jpreadme)
+[日本語READMEはこちら japanese readme is here](#jpreadme)
 
-[한국어 README korean readme is here](https://github.com/folt-a/godot-live-debugger#koreadme)
+[한국어 README korean readme is here](#koreadme)
 
 Live Debugger is Godot 4 addon.
 
