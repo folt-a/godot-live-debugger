@@ -61,7 +61,7 @@ const order_frame_interval = 70
 # ja:LiveDebuggerをフォーカスしたときに自動的にゲームのSceneTreeをpausedにします
 # ko:LiveDebugger에 포커스를 맞추면 자동으로 게임의 SceneTree를 일시 중지합니다
 # en:When LiveDebugger is focused, automatically pause the SceneTree of the game
-const is_auto_focus_pause_initial_value:bool = true
+const is_auto_focus_pause_initial_value:bool = false
 const order_is_auto_focus_pause = 80
 
 # * display_float_decimal
@@ -143,6 +143,7 @@ func _enter_tree() -> void:
 	
 	_add_user_dir_icon("GuiVisibilityVisible")
 	_add_user_dir_icon("GuiVisibilityHidden")
+	_add_user_dir_icon("Remove")
 	_add_user_dir_icon("Info")
 	
 	_add_user_dir_icon("Pause")

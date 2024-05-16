@@ -49,3 +49,9 @@ func _physics_process(delta):
 #@Call
 func reset_position():
 	global_position = position_for_reset
+
+#@Call
+func clone():
+	var new_self:= self.duplicate(DUPLICATE_SIGNALS|DUPLICATE_GROUPS|DUPLICATE_SCRIPTS|DUPLICATE_USE_INSTANTIATION)
+	get_parent().add_child(new_self)
+	new_self.position = position_for_reset

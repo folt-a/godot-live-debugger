@@ -57,6 +57,9 @@ var _debug_path_mapping_dir:Dictionary
 
 var _target_nodes:Array
 
+# 他のノードプロパティ指定のノードをキャッシュ <n:Node,Dictionary<node_path:StringName,other_node:Node>>
+var _target_node_other_nodes:Dictionary = {}
+
 var _root_item:TreeItem
 
 var _is_ja:bool = false
@@ -103,7 +106,7 @@ const frame_interval_initial_value:int = 1
 # ja:常に最前面に表示
 const always_on_top_initial_value:bool = true
 # ja:自動ポーズ
-const is_auto_focus_pause_initial_value:bool = true
+const is_auto_focus_pause_initial_value:bool = false
 # ja:無視するスクリプトパス(*でワイルドカード指定可能)
 const ignore_script_paths_initial_value:Array = []
 # ja:Autoloadシングルトンに Live Debugger ノードを追加するか
@@ -377,6 +380,7 @@ func refresh():
 	
 	if not tree.node_added.is_connected(_on_node_added):
 		tree.node_added.connect(_on_node_added)
+		tree.node_removed.connect(_on_node_removed)
 
 func _process(delta: float) -> void:
 	if _is_focus_pause:return
@@ -414,8 +418,16 @@ func _update_node(n:Node, item:TreeItem):
 		var d:Dictionary = item.get_metadata(1)
 		# 他ノードプロパティの場合はget_pathする
 		if d.has("node_path"):
-			# メタデータにキャッシュして毎フレームget_nodeを避ける 効果あるのか？
-			n = n.get_node_or_null(d.node_path)
+			# キャッシュして毎フレームget_nodeを避ける
+			# 他のノードプロパティ指定のノードをキャッシュ <nid:int,Dictionary<node_path:StringName,other_node_id:int>>
+			if not _target_node_other_nodes[n.get_instance_id()].has(d.node_path):
+				var other_n:Node = n.get_node_or_null(d.node_path)
+				if other_n:
+					_target_node_other_nodes[n.get_instance_id()][d.node_path] = other_n.get_instance_id()
+					n = other_n
+			else:
+				n = instance_from_id(_target_node_other_nodes[n.get_instance_id()][d.node_path])
+			
 			if not n:return
 		if d.has("prop"):
 			
@@ -472,6 +484,18 @@ func _on_node_added(n:Node):
 		_target_nodes.append(n)
 		_add_list(n)
 
+func _on_node_removed(n:Node):
+	if _is_target_node(n) and _target_nodes.find(n) != -1:
+		_target_nodes.erase(n)
+		
+		if _target_node_other_nodes.has(n.get_instance_id()):
+			_target_node_other_nodes[n.get_instance_id()].clear()
+			_target_node_other_nodes.erase(n.get_instance_id())
+		var nid:int = n.get_instance_id()
+		for item_n in _root_item.get_children():
+			if item_n.get_metadata(0) == nid:
+				_root_item.remove_child(item_n)
+				break
 
 func _is_target_node(n:Node) -> bool:
 	var scr:Script = n.get_script()
@@ -496,6 +520,13 @@ func _add_list(n:Node):
 			item_for_dir_root.add_button(0, _load_icon("GuiVisibilityVisible"))
 		else:
 			item_for_dir_root.add_button(0, _load_icon("GuiVisibilityHidden"))
+	
+	item_for_dir_root.add_button(2, _load_icon("Remove"))
+	item_for_dir_root.set_button_color(2, 0, Color.RED)
+	item_for_dir_root.set_text_alignment(2, HORIZONTAL_ALIGNMENT_RIGHT)
+	
+	if not _target_node_other_nodes.has(n.get_instance_id()):
+		_target_node_other_nodes[n.get_instance_id()] = {}
 	
 	item_for_dir_root.set_icon(0, _load_icon(debug_infos[0].node_icon))
 	
@@ -644,6 +675,10 @@ func _on_button_clicked(item:TreeItem, column:int, id:int, mouse_button_index:in
 			item.set_button(0, 0, _load_icon("GuiVisibilityVisible"))
 		else:
 			item.set_button(0, 0, _load_icon("GuiVisibilityHidden"))
+		return
+	elif column == 2:
+		# 削除ボタン
+		instance.queue_free()
 		return
 	
 	var d:Dictionary = item.get_metadata(1)
