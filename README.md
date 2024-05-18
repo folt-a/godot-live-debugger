@@ -139,6 +139,10 @@ func play_animation(anim_name:StringName) -> String:
 
 Always display the debugger window on top
 
+- Always on top
+- Show when main window focused
+- None
+
 * debugger_window_position_type
 
 - Adjacent to game on the right
@@ -384,6 +388,10 @@ func play_animation(anim_name:StringName) -> String:
 * always_on_top
 
 デバッガウィンドウで常に最前面に表示
+
+- Always on top :常に最前面に表示します。
+- Show when main window focused :ゲームのメインウィンドウをフォーカスしたときに前にでてきます。
+- None :しません。
 
 * debugger_window_position_type
 
@@ -635,6 +643,10 @@ func play_animation(anim_name:StringName) -> String:
 * always_on_top
 
 디버거 윈도우를 항상 최상위에 표시
+
+- Always on top : 항상 맨 앞면에 표시합니다.
+- Show when main window focused : 게임의 메인 윈도우를 포커스 할 때 앞으로 나옵니다.
+- None : None.
 
 * debugger_window_position_type
 
