@@ -15,7 +15,7 @@ const NODE_LIVE_DEBUGGER_TSCN_PATH:String = "res://addons/godot-live-debugger/no
 # ja:常に最前面に表示
 # ko:항상 최상위에 표시
 # en:Always on top
-const always_on_top_initial_value:bool = true
+const always_on_top_initial_value:int = 0
 const order_always_on_top:int = 10
 # * debugger_window_position_type
 # ja:デバッガーのウィンドウの位置の種別
@@ -313,9 +313,9 @@ func _enter_tree() -> void:
 		ProjectSettings.set_order("godot_live_debugger/debugger_window/always_on_top", order_always_on_top + 1)
 		ProjectSettings.add_property_info({
 		"name": "godot_live_debugger/debugger_window/always_on_top",
-		"type": TYPE_BOOL,
-		#"hint": PROPERTY_HINT_TYPE_STRING,
-		#"hint_string": "test str"
+		"type": TYPE_INT,
+		"hint": PROPERTY_HINT_ENUM,
+		"hint_string": "Always on top,Show when main window focused,None"
 		})
 		var description = ""
 		if _is_ja:

@@ -80,7 +80,7 @@ var _debugger_window_size:Vector2i
 var _debugger_window_absolute_position:Vector2i
 var _is_output_console_log:bool
 var _frame_interval:int
-var _always_on_top:bool
+var _always_on_top:int
 var _ignore_script_paths:Array[String]
 var _is_add_debugger_to_autoload_singleton:bool
 var _display_float_decimal:int
@@ -104,7 +104,7 @@ const is_output_console_log_initial_value:bool = true
 # ja:フレーム間隔
 const frame_interval_initial_value:int = 1
 # ja:常に最前面に表示
-const always_on_top_initial_value:bool = true
+const always_on_top_initial_value:int = 0
 # ja:自動ポーズ
 const is_auto_focus_pause_initial_value:bool = false
 # ja:無視するスクリプトパス(*でワイルドカード指定可能)
@@ -155,7 +155,7 @@ func _init() -> void:
 	_is_output_console_log = ProjectSettings.get_setting("godot_live_debugger/editor/is_output_console_log", is_output_console_log_initial_value)
 	_frame_interval = ProjectSettings.get_setting("godot_live_debugger/debugger/frame_interval", frame_interval_initial_value)
 	_always_on_top = ProjectSettings.get_setting("godot_live_debugger/debugger_window/always_on_top", always_on_top_initial_value)
-	always_on_top = _always_on_top
+	always_on_top = _always_on_top == 0
 	_is_auto_focus_pause = ProjectSettings.get_setting("godot_live_debugger/debugger/is_auto_focus_pause", is_auto_focus_pause_initial_value)
 	#_ignore_script_paths = Array(ProjectSettings.get_setting("godot_live_debugger/ignore_script_paths",ignore_script_paths_initial_value),TYPE_STRING,&"",null)
 	#_is_add_debugger_to_autoload_singleton = ProjectSettings.get_setting("godot_live_debugger/is_add_debugger_to_autoload_singleton") as bool
@@ -324,6 +324,9 @@ func _ready():
 	self.focus_exited.connect(_on_focus_exited)
 	
 	self.close_requested.connect(_on_close_requested)
+
+	if _always_on_top == 1:
+		get_tree().root.focus_entered.connect(_on_main_window_focus_entered)
 	
 	# 起動時にゲームのウィンドウのフォーカスをとってしまうので
 	# がんばってお返しする
@@ -334,6 +337,18 @@ func _ready():
 		count_for_clash += 1
 		if count_for_clash > 1000:
 			break
+
+var is_lock:bool = false
+func _on_main_window_focus_entered():
+	if _always_on_top != 1: return
+	if is_lock:return
+	self.grab_focus()
+	is_lock = true
+	await get_tree().process_frame
+	await get_tree().process_frame
+	get_tree().root.grab_focus()
+	await get_tree().create_timer(0.5).timeout
+	is_lock = false
 
 func _on_close_requested():
 	queue_free()
