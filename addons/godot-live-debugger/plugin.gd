@@ -772,7 +772,25 @@ func update():
 				# 先頭からの空白を削除
 				line = line.lstrip("\t").lstrip(" ")
 				
-				if line.begins_with("#@debug") or line.begins_with("#@Debug") or line.begins_with("#@DEBUG")\
+				# 特定のノード名以外は無視する用
+				# #@DebugNode(NodeName1,NodeName2)
+				if line.begins_with("#@debugnode") or line.begins_with("#@DebugNode") or line.begins_with("#@DEBUG_NODE")\
+				:
+					debug_info = {}
+					debug_info["path"] = path
+					
+					#()の中を取得する
+					var reg_results = regex_maru_kakko.search_all(line)
+					#print("regex_maru_kakko ",result)
+					if not reg_results.is_empty():
+						for result in reg_results:
+							var maru_kakko:String = result.get_string().trim_prefix("(").trim_suffix(")")
+							
+							if maru_kakko == "":continue#空かっこは無視、[func_name()]の関数かっこも無視
+							debug_info["debugnode"] = maru_kakko.split("/")
+					results.append(debug_info)
+				
+				elif line.begins_with("#@debug") or line.begins_with("#@Debug") or line.begins_with("#@DEBUG")\
 				or line.begins_with("#@call") or line.begins_with("#@Call") or line.begins_with("#@CALL")\
 				:
 					is_call = line.begins_with("#@call") or line.begins_with("#@Call") or line.begins_with("#@CALL")
@@ -789,7 +807,7 @@ func update():
 					#print("regex_maru_kakko ",result)
 					if not reg_results.is_empty():
 						for result in reg_results:
-							var maru_kakko:String = result.get_string().trim_prefix("(").trim_prefix(")")
+							var maru_kakko:String = result.get_string().trim_prefix("(").trim_suffix(")")
 							
 							if maru_kakko == "":continue#空かっこは無視、[func_name()]の関数かっこも無視
 							

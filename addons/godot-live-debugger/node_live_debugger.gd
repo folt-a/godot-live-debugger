@@ -55,6 +55,9 @@ var _debug_information_lists:Array[Dictionary]
 
 var _debug_path_mapping_dir:Dictionary
 
+# <path:String, nodenames:Array[String]>
+var _debug_node_dir:Dictionary = {}
+
 var _target_nodes:Array
 
 # 他のノードプロパティ指定のノードをキャッシュ <n:Node,Dictionary<node_path:StringName,other_node:Node>>
@@ -144,7 +147,10 @@ func _init() -> void:
 	var json_txt:String = FileAccess.get_file_as_string(debug_informations_json_path)
 	_debug_information_lists = Array(JSON.parse_string(json_txt),TYPE_DICTIONARY,&"",null)
 	for d in _debug_information_lists:
-		if not _debug_path_mapping_dir.has(d.path):
+		if d.has("debugnode"):
+			# <path:String, nodenames:Array[String]>
+			_debug_node_dir[d.path] = d.debugnode
+		elif not _debug_path_mapping_dir.has(d.path):
 			_debug_path_mapping_dir[d.path] = d.path
 	_debugger_window_position_type = ProjectSettings.get_setting("godot_live_debugger/debugger_window/debugger_window_position_type", debugger_window_position_type_initial_value)
 	_is_debugger_window_height_adjust_monitor_height = ProjectSettings.get_setting("godot_live_debugger/debugger_window/is_debugger_window_height_adjust_monitor_height", is_debugger_window_height_adjust_monitor_height_initial_value)
@@ -516,12 +522,14 @@ func _is_target_node(n:Node) -> bool:
 	var scr:Script = n.get_script()
 	if not scr: return false
 	if not scr.resource_path or scr.resource_path == "": return false
-	return _debug_path_mapping_dir.has(scr.resource_path)
+	return _debug_path_mapping_dir.has(scr.resource_path)\
+	and (not _debug_node_dir.has(scr.resource_path) or _debug_node_dir[scr.resource_path].find(n.name) != -1)
+	# ノード名指定がないか、ノード名指定にノード名が含まれているなら対象にする
 
 
 func _add_list(n:Node):
 	var scr:Script = n.get_script()
-	var debug_infos:Array[Dictionary] = _debug_information_lists.filter(func(d): return d.path == scr.resource_path)
+	var debug_infos:Array[Dictionary] = _debug_information_lists.filter(func(d): return d.path == scr.resource_path and not d.has("debugnode"))
 	debug_infos.sort_custom(func(a,b): return a.sort_index > b.sort_index)
 	var debug_infos_cate_dic:Dictionary = {}
 	var item_for_dir_root:= list_tree.create_item(_root_item)
