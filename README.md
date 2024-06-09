@@ -131,6 +131,15 @@ func play_animation(anim_name:StringName) -> String:
 
 ```
 
+```gdscript
+
+# Write this somewhere in your script:
+# Display only Node the specified nodename
+#@DebugNode(NodeName1)
+
+
+```
+
 ## Project Settings
 
 ### Debug Window
@@ -378,6 +387,14 @@ func play_animation(anim_name:StringName) -> String:
 	animation_player.play(anim_name)
 	return anim_name
 
+
+```
+
+```gdscript
+
+# スクリプトのどこかに書く
+# このノード名と一致するノードのみを監視対象にします。
+#@DebugNode(NodeName1)
 
 ```
 
@@ -633,6 +650,14 @@ func play_animation(anim_name:StringName) -> String:
 	animation_player.play(anim_name)
 	return anim_name
 
+
+```
+
+```gdscript
+
+# 스크립트의 어딘가에 쓰기
+# 이 Node Name과 일치하는 Node Name을 가진 Node만을 Watch 대상으로 합니다.
+#@DebugNode(NodeName1)
 
 ```
 
