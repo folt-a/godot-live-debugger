@@ -470,7 +470,7 @@ func _update_node(n:Node, item:TreeItem):
 				x_str = x_str.pad_decimals(_display_float_decimal) if x_str.contains(".") else x_str
 				var y_str:String = str(n.get(d.prop).y)
 				y_str = y_str.pad_decimals(_display_float_decimal) if y_str.contains(".") else y_str
-				var z_str:String = str(n.get(d.prop).y)
+				var z_str:String = str(n.get(d.prop).z)
 				z_str = z_str.pad_decimals(_display_float_decimal) if z_str.contains(".") else z_str
 				item.set_text(2, x_str + ", " + y_str + ", " + z_str)
 				return
