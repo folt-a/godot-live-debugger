@@ -531,11 +531,11 @@ MITライセンスです。
 # koreadme
 # Live Debugger 한국어 README （Korean translation README）
 
-게임 상태를 디버깅하기 위한 고수준 윈도우입니다.
+실시간 게임 상태를 디버깅을 화면을 띄워 주는 애드온입니다.
 
 표시하고 싶은 노드의 속성을 모니터링하거나 값을 편집할 수 있습니다.
 
-게임 윈도우를 실행하면 실시간으로 업데이트되므로 편집할 수 있습니다.
+게임 프로젝트 화면을 실행하면, 실시간으로 업데이트되므로 편집할 수 있습니다.
 
 조작을 방해하지 않고 게임 진행 등의 변수를 확인할 수 있습니다.
 
@@ -547,7 +547,7 @@ https://github.com/folt-a/godot-live-debugger/assets/32963227/34007610-16cc-4119
 
 1. 다운로드 또는 Git 클론을 통해 로컬 PC에 넣습니다.
 
-2. addons/godot-live-debugger가 되도록 당신의 Godot 프로젝트로 이동/복사합니다.
+2. addons/godot-live-debugger 폴더를 당신의 Godot 프로젝트로 이동/복사합니다.
 
 3. Godot의 "프로젝트 설정" → "플러그인"에서 godot-live-debugger를 ✅합니다.
 
@@ -562,14 +562,14 @@ https://github.com/folt-a/godot-live-debugger/assets/32963227/34007610-16cc-4119
 
 ```gdscript
 
-#@Debug 주석 바로 아래의 속성을 모니터링 대상으로 합니다.
+#@Debug 주석 바로 아랫줄의 속성을 모니터링 대상으로 합니다.
 
 #@Debug
 var property_1:int = 300
 
 #---
 
-# 함수를 지정할 수도 있습니다. _process에서 매 프레임 호출되므로 주의하세요.
+# 함수도 모니터링 할 수 있습니다. _process에서 매 프레임 호출되므로 주의하세요.
 
 #@Debug
 func get_str():
@@ -577,7 +577,7 @@ func get_str():
 
 #---
 
-# 「」나 ''로 보기 좋게 표시를 위한 이름을 붙일 수도 있습니다.
+# 「」 또는 ''로 변수명 대신 표기할 이름을 붙일 수 있습니다.
 
 #@Debug'alias_name'
 var property_2:String = ""
@@ -586,14 +586,14 @@ var property_2:String = ""
 
 #---
 
-# 카테고리를 붙일 수 있습니다. 트리 아이템을 접을 수 있습니다.
+# 카테고리명을 붙일 수 있습니다. 이를 통해 트리 아이템을 만들고 접을 수 있습니다.
 
 #@Debug(category_name)
 var property_3:Vector2 = Vector2.ZERO
 
 #---
 
-# 카테고리는 슬래시 /로 하위 카테고리로 만들 수 있습니다. 접기 가능.
+# 슬래시 /로 하위 카테고리도 만들 수 있습니다. 접기도 가능합니다.
 
 #@Debug(cate1/nested_category2)
 var property_4:Vector3 = Vector3.ZERO
@@ -610,7 +610,7 @@ var property_4:Vector3 = Vector3.ZERO
 
 #@Debug[./ChildNode:position]
 
-# 내부 처리에서는 : 앞까지 get_node()하므로 %도 사용 가능합니다.
+# 내부 노드의 경우 : 앞부분을 get_node()하고 있기 때문에 %도 사용 가능합니다.
 
 #@Debug[%ChildNode:position]
 
@@ -627,7 +627,7 @@ var property_6:bool = false
 #---
 
 
-# 여러 지정도 가능합니다. 순서는 상관없습니다.
+# 한줄에 여러 지정도 가능합니다. 순서는 상관없습니다.
 
 #@Debug(cate)'alias'{#RED}
 var property_7:int = 123
@@ -655,9 +655,9 @@ func play_animation(anim_name:StringName) -> String:
 
 ```gdscript
 
-# 스크립트의 어딘가에 쓰기
-# 이 Node Name과 일치하는 Node Name을 가진 Node만을 Watch 대상으로 합니다.
-#@DebugNode(NodeName1)
+# 스크립트 내 아무데나 작성하기
+# 이 Node Name과 일치하는 Node Name을 가진 Node만을 디버깅 대상으로 삼습니다.
+#@DebugNode(NodeName1) 
 
 ```
 
@@ -687,7 +687,7 @@ func play_animation(anim_name:StringName) -> String:
 
 디버거 윈도우의 높이를 모니터의 높이에 맞출지 여부
 
-윈도우의 높이가 모니터 전체까지 늘어납니다.
+윈도우의 높이가 모니터 화면 끝까지 늘어납니다.
 debugger_window_size의 Y를 무시합니다.
 debugger_window_position_offset의 Y를 이동하여 위치를 내리면 그만큼 작아집니다.
 
@@ -721,7 +721,7 @@ is_debugger_window_height_adjust_monitor_height가 켜져 있을 경우 Y는 무
  
 몇 프레임마다 노드를 체크할지에 대한 프레임 값입니다.
 
-성능이 떨어질 경우 값을 크게 해주세요.
+성능이 떨어질 경우 숫자 크기를 늘리십시요.
 
 기본값은 1이므로 매 프레임입니다.
 
@@ -763,11 +763,11 @@ float의 표시 자릿수 제한입니다.
 
 * is_update_when_save_external_data
 
-외부 데이터 저장 시 자동 업데이트 여부
+외부에서 데이터 저장 시 자동 업데이트 여부
 
-외부 업데이트 시 모든 스크립트를 체크하여 대상을 찾습니다.
+외부에서 업데이트 시 모든 스크립트를 체크하여 대상을 찾습니다.
 
-무언가 업데이트할 때마다 호출되므로 무거워질 경우 꺼주세요.
+무언가 업데이트할 때마다 호출되므로 버벅일 경우 꺼주세요.
 
 그 경우 대신에
 
@@ -785,4 +785,4 @@ MIT 라이선스입니다.
 
 # Donate 기부
 
-편리하다고 생각되면 부탁드립니다.
+편리하다고 생각되면 아무쪼록 부탁드립니다.
