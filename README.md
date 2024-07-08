@@ -4,6 +4,10 @@
 
 [한국어 README korean readme is here](#koreadme)
 
+<img src="https://github.com/folt-a/godot-live-debugger/assets/32963227/ab0e7adf-07d4-49fa-b306-401deb262e57" height="300">
+
+icon by [@SirakabaBiome](https://github.com/SirakabaBiome)
+
 Live Debugger is Godot 4 addon.
 
 A high-level window for debugging game status. 
