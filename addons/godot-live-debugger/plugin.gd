@@ -27,7 +27,7 @@ const order_debugger_window_position_type = 20
 # ja:デバッガーのウィンドウの高さをモニターの高さに合わせるか
 # ko:디버거 창 높이를 모니터 높이에 맞추시겠습니까?
 # en:Do you want to adjust the height of the debugger window to the height of the monitor?
-const is_debugger_window_height_adjust_monitor_height_initial_value:bool = true
+const is_debugger_window_height_adjust_monitor_height_initial_value:bool = false
 const order_is_debugger_window_height_adjust_monitor_height = 30
 # * debugger_window_position_offset
 # ja:デバッガーのウィンドウの位置のオフセット（位置をずらす）
