@@ -520,7 +520,9 @@ func _on_changed_project_settings():
 			remove_autoload_singleton("LiveDebugger")
 
 func _save_external_data():
-	update()
+	if ProjectSettings.has_setting("godot_live_debugger/editor/is_update_when_save_external_data")\
+	and ProjectSettings.get_setting("godot_live_debugger/editor/is_update_when_save_external_data"):
+		update()
 
 func _exit_tree() -> void:
 	remove_tool_menu_item("Update LiveDebugger Data")
