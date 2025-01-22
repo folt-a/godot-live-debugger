@@ -113,8 +113,23 @@ func _init():
 		.contains("ja")
 	_is_ko = TranslationServer.get_locale()\
 		.contains("ko")
+	header_btn = CheckBox.new()
+	header_btn.tooltip_text = "Autoload LiveDebugger"
+	header_btn.toggled.connect(func(t):
+		ProjectSettings.set_setting("godot_live_debugger/editor/is_add_debugger_to_autoload_singleton", t)
+		if t:
+			add_autoload_singleton("LiveDebugger", NODE_LIVE_DEBUGGER_TSCN_PATH)
+		else:
+			remove_autoload_singleton("LiveDebugger")
+		)
 
+var header_btn:CheckBox
 func _enter_tree() -> void:
+	
+	add_control_to_container(CONTAINER_TOOLBAR, header_btn)
+	var toolbar = header_btn.get_parent()
+	toolbar.move_child(header_btn, toolbar.get_child_count() - 3)
+	
 	add_tool_menu_item("Update LiveDebugger Data", update)
 	
 	# 使うアイコンをuserdirに投入

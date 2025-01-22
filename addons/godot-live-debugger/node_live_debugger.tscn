@@ -1,9 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://de482go4wodb0"]
+[gd_scene load_steps=2 format=3 uid="uid://de482go4wodb1"]
 
-[ext_resource type="Script" path="res://addons/godot-live-debugger/node_live_debugger.gd" id="1_hfyam"]
+[ext_resource type="Script" uid="uid://cy3m4v5h2enki" path="res://addons/godot-live-debugger/node_live_debugger.gd" id="1_hfyam"]
 
 [node name="LiveDebugger" type="Window"]
 process_mode = 3
+auto_translate_mode = 2
 title = "Live Debugger"
 initial_position = 4
 size = Vector2i(800, 800)
@@ -59,8 +60,27 @@ vertical_alignment = 1
 [node name="FPSLabel2" type="Label" parent="Control/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
-text = "FPS:"
+text = ", Speed:"
 vertical_alignment = 1
+
+[node name="SpeedHSlider" type="HSlider" parent="Control/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_vertical = 1
+min_value = 0.1
+max_value = 3.0
+step = 0.1
+value = 1.0
+
+[node name="SpeedSpinBox" type="SpinBox" parent="Control/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 0.1
+max_value = 3.0
+step = 0.1
+value = 1.0
+select_all_on_focus = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -71,7 +91,11 @@ alignment = 2
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ListTree" type="Tree" parent="Control/VBoxContainer"]
+[node name="VSplitContainer" type="VSplitContainer" parent="Control/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ListTree" type="Tree" parent="Control/VBoxContainer/VSplitContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -79,6 +103,20 @@ columns = 3
 column_titles_visible = true
 hide_root = true
 
+[node name="PrintRichTextLabel" type="RichTextLabel" parent="Control/VBoxContainer/VSplitContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 2
+theme_override_constants/line_separation = -2
+bbcode_enabled = true
+scroll_following = true
+shortcut_keys_enabled = false
+threaded = true
+selection_enabled = true
+drag_and_drop_selection_enabled = false
+
 [connection signal="pressed" from="Control/VBoxContainer/HBoxContainer/PauseToggleButton" to="." method="_on_pause_toggle_button_pressed"]
 [connection signal="toggled" from="Control/VBoxContainer/HBoxContainer/AutoPauseToggleCheckBox" to="." method="_on_auto_pause_toggle_check_box_toggled"]
+[connection signal="value_changed" from="Control/VBoxContainer/HBoxContainer/SpeedHSlider" to="." method="_on_speed_h_slider_value_changed"]
+[connection signal="value_changed" from="Control/VBoxContainer/HBoxContainer/SpeedSpinBox" to="." method="_on_speed_spin_box_value_changed"]
 [connection signal="pressed" from="Control/VBoxContainer/HBoxContainer/HBoxContainer/DebuggerEnabledToggleButton" to="." method="_on_debugger_enabled_toggle_button_pressed"]

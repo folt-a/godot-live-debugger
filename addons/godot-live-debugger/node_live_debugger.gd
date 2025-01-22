@@ -1,7 +1,7 @@
 #01. @tool
 
 #02. class_name
-
+class_name NodeLiveDebugger
 #03. extends
 extends Window
 #04. # docstring
@@ -40,12 +40,13 @@ const node_live_debugger_settings_path = "user://node_live_debugger_settings.jso
 #-----------------------------------------------------------
 
 @export var columns:int = 3
+@export var print_min_height:int = 256
 
 
 #-----------------------------------------------------------
 #09. public variables
 #-----------------------------------------------------------
-
+static var debugger:NodeLiveDebugger
 
 
 #-----------------------------------------------------------
@@ -129,6 +130,8 @@ const is_update_when_save_external_data_initial_value:bool = true
 @onready var auto_pause_toggle_check_box:CheckBox = %AutoPauseToggleCheckBox
 @onready var debugger_enabled_toggle_button:Button = %DebuggerEnabledToggleButton
 @onready var framerate_label:Label = %FramerateLabel
+@onready var print_rich_text_label: RichTextLabel = %PrintRichTextLabel
+var print_text:String = ""
 
 #endregion
 #-----------------------------------------------------------
@@ -143,6 +146,11 @@ func _init() -> void:
 		.contains("ja")
 	_is_ko = TranslationServer.get_locale()\
 		.contains("ko")
+	
+	if not FileAccess.file_exists(debug_informations_json_path):
+		var file:= FileAccess.open(debug_informations_json_path,FileAccess.WRITE)
+		file.store_string("[]")
+		file.close()
 	
 	var json_txt:String = FileAccess.get_file_as_string(debug_informations_json_path)
 	_debug_information_lists = Array(JSON.parse_string(json_txt),TYPE_DICTIONARY,&"",null)
@@ -167,6 +175,7 @@ func _init() -> void:
 	#_is_add_debugger_to_autoload_singleton = ProjectSettings.get_setting("godot_live_debugger/is_add_debugger_to_autoload_singleton") as bool
 	_display_float_decimal = ProjectSettings.get_setting("godot_live_debugger/debugger/display_float_decimal", display_float_decimal_initial_value)
 
+	NodeLiveDebugger.debugger = self
 
 #-----------------------------------------------------------
 #13. built-in virtual _ready method
@@ -190,7 +199,6 @@ func _ready():
 	await tree.process_frame
 	await tree.process_frame
 	await tree.process_frame
-
 	
 	game_window_id = tree.root.get_window_id()
 
@@ -247,8 +255,6 @@ func _ready():
 		# 絶対位置指定
 		self.size = _debugger_window_size
 		self.position = _debugger_window_absolute_position
-	
-	
 	
 	pause_toggle_button.icon = _load_icon("Pause")
 	pause_toggle_button.add_theme_color_override(&"icon_normal_color", Color.CORAL)
@@ -319,7 +325,8 @@ func _ready():
 
 		auto_pause_toggle_check_box.text = "Auto Pause"
 		auto_pause_toggle_check_box.tooltip_text = "Automatically pause the SceneTree of the game\nwhen LiveDebugger is focus_entered"
-		
+	
+	print_rich_text_label.custom_minimum_size.y = print_min_height
 	
 	#list_tree.cell_selected.connect(_on_cell_selected)
 	list_tree.button_clicked.connect(_on_button_clicked)
@@ -413,7 +420,6 @@ func _process(delta: float) -> void:
 		if Engine.get_frames_drawn() % _frame_interval == 0:
 			update()
 
-
 func update() -> void:
 	if !_root_item: return
 	var enable_list_indexes:Array[int] = []
@@ -492,6 +498,48 @@ func _update_node(n:Node, item:TreeItem):
 			#print(n.get(d.prop))
 		if d.has("call") and not d.call:
 			item.set_text(2, str(n.call(d.func)))
+
+static func print(s:Variant, title:String = ""):
+	if is_instance_valid(NodeLiveDebugger.debugger):
+		if title != "":
+			NodeLiveDebugger.debugger.print_rich_text_label.add_text("[" + title + "]" + str(s) + "\n")
+		else:
+			NodeLiveDebugger.debugger.print_rich_text_label.add_text(str(s) + "\n")
+	else:
+		print(s)
+
+static func print_info(s:Variant, title:String = ""):
+	if is_instance_valid(NodeLiveDebugger.debugger):
+		if title != "":
+			NodeLiveDebugger.debugger.print_rich_text_label.append_text("[color=LIME_GREEN][b]" + "[" + title + "]" + str(s) + "[/b][/color]\n")
+		else:
+			NodeLiveDebugger.debugger.print_rich_text_label.append_text("[color=LIME_GREEN][b]" + str(s) + "[/b][/color]\n")
+		print(s)
+	else:
+		print(s)
+
+static func print_warn(s:Variant, title:String = ""):
+	if is_instance_valid(NodeLiveDebugger.debugger):
+		if title != "":
+			NodeLiveDebugger.debugger.print_rich_text_label.append_text("[color=GOLDENROD][b]" + "[" + title + "]"  + str(s) + "[/b][/color]\n")
+		else:
+			NodeLiveDebugger.debugger.print_rich_text_label.append_text("[color=GOLDENROD][b]" + str(s) + "[/b][/color]\n")
+	else:
+		print(s)
+
+static func print_err(s:Variant, title:String = ""):
+	if is_instance_valid(NodeLiveDebugger.debugger):
+		if title != "":
+			NodeLiveDebugger.debugger.print_rich_text_label.append_text("[color=LIGHT_CORAL][b]" + "[" + title + "]"  + str(s) + "[/b][/color]\n")
+		else:
+			NodeLiveDebugger.debugger.print_rich_text_label.append_text("[color=LIGHT_CORAL][b]" + str(s) + "[/b][/color]\n")
+	else:
+		print(s)
+
+
+static func clear_print():
+	#NodeLiveDebugger.debugger.print_text = ""
+	NodeLiveDebugger.debugger.print_rich_text_label.clear()
 
 #endregion
 #-----------------------------------------------------------
@@ -768,9 +816,9 @@ func _on_check(item: TreeItem, column: int):
 	#var index:int = item.get_index()
 	#if column == ENABLED_COLUMN_INDEX:
 		#if !checked:
-			#_target_nodes[index].show_list()
+			#_target_nodes[index].activate()
 		#else:
-			#_target_nodes[index].disable_list()
+			#_target_nodes[index].deactivate()
 	#elif column == LOCK_COLUMN_INDEX:
 		#_target_nodes[index].is_lock = !checked
 	pass
@@ -988,3 +1036,16 @@ func _on_debugger_enabled_toggle_button_pressed():
 		debugger_enabled_toggle_button.add_theme_color_override(&"icon_hover_pressed_color", Color.CORAL)
 		debugger_enabled_toggle_button.add_theme_color_override(&"icon_pressed_color", Color.CORAL)
 		debugger_enabled_toggle_button.add_theme_color_override(&"icon_focus_color", Color.CORAL)
+
+@onready var speed_h_slider: HSlider = %SpeedHSlider
+@onready var speed_spin_box: SpinBox = %SpeedSpinBox
+func _on_speed_h_slider_value_changed(value: float) -> void:
+	_on_changed_game_speed(value)
+
+func _on_speed_spin_box_value_changed(value: float) -> void:
+	_on_changed_game_speed(value)
+
+func _on_changed_game_speed(speed:float):
+	Engine.time_scale = speed
+	speed_h_slider.set_value_no_signal(speed)
+	speed_spin_box.set_value_no_signal(speed)
