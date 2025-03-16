@@ -280,6 +280,7 @@ func _ready():
 	list_tree.add_theme_icon_override(&"arrow_collapsed", arrow_collapsed_tex)
 	
 	list_tree.set_column_expand_ratio(0,Control.SIZE_FILL)
+	list_tree.set_column_custom_minimum_width(0, 240)
 	list_tree.set_column_expand_ratio(1,Control.SIZE_FILL)
 	list_tree.set_column_expand_ratio(2,Control.SIZE_EXPAND_FILL)
 	list_tree.set_column_expand(2,true)
@@ -505,6 +506,19 @@ static func print(s:Variant, title:String = ""):
 			NodeLiveDebugger.debugger.print_rich_text_label.add_text("[" + title + "]" + str(s) + "\n")
 		else:
 			NodeLiveDebugger.debugger.print_rich_text_label.add_text(str(s) + "\n")
+		print(s)
+	else:
+		print("[" + title + "]")
+		print(s)
+
+static func print_target_only(s:Variant, node:Node, title:String = ""):
+	if is_instance_valid(NodeLiveDebugger.debugger):
+		if NodeLiveDebugger.debugger._target_nodes.has(node):
+			if title != "":
+				NodeLiveDebugger.debugger.print_rich_text_label.add_text("[" + title + "]" + str(s) + "\n")
+			else:
+				NodeLiveDebugger.debugger.print_rich_text_label.add_text(str(s) + "\n")
+			print(s)
 	else:
 		print(s)
 
@@ -524,6 +538,7 @@ static func print_warn(s:Variant, title:String = ""):
 			NodeLiveDebugger.debugger.print_rich_text_label.append_text("[color=GOLDENROD][b]" + "[" + title + "]"  + str(s) + "[/b][/color]\n")
 		else:
 			NodeLiveDebugger.debugger.print_rich_text_label.append_text("[color=GOLDENROD][b]" + str(s) + "[/b][/color]\n")
+		print(s)
 	else:
 		print(s)
 
@@ -533,6 +548,7 @@ static func print_err(s:Variant, title:String = ""):
 			NodeLiveDebugger.debugger.print_rich_text_label.append_text("[color=LIGHT_CORAL][b]" + "[" + title + "]"  + str(s) + "[/b][/color]\n")
 		else:
 			NodeLiveDebugger.debugger.print_rich_text_label.append_text("[color=LIGHT_CORAL][b]" + str(s) + "[/b][/color]\n")
+		print(s)
 	else:
 		print(s)
 

@@ -115,6 +115,9 @@ func _init():
 		.contains("ko")
 	header_btn = CheckBox.new()
 	header_btn.tooltip_text = "Autoload LiveDebugger"
+	if ProjectSettings.has_setting("godot_live_debugger/editor/is_add_debugger_to_autoload_singleton"):
+		if ProjectSettings.get_setting("godot_live_debugger/editor/is_add_debugger_to_autoload_singleton"):
+			header_btn.button_pressed = true
 	header_btn.toggled.connect(func(t):
 		ProjectSettings.set_setting("godot_live_debugger/editor/is_add_debugger_to_autoload_singleton", t)
 		if t:
@@ -804,7 +807,7 @@ func update():
 							var maru_kakko:String = result.get_string().trim_prefix("(").trim_suffix(")")
 							
 							if maru_kakko == "":continue#空かっこは無視、[func_name()]の関数かっこも無視
-							debug_info["debugnode"] = maru_kakko.split("/")
+							debug_info["debugnode"] = maru_kakko.split(",")
 					results.append(debug_info)
 				
 				elif line.begins_with("#@debug") or line.begins_with("#@Debug") or line.begins_with("#@DEBUG")\
