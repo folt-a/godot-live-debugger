@@ -1,5 +1,7 @@
 # Live Debugger
 
+GodotEngine 4.3, 4.4.1
+
 [日本語READMEはこちら japanese readme is here](#jpreadme)
 
 [한국어 README korean readme is here](#koreadme)
