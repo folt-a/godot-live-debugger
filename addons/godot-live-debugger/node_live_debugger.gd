@@ -130,6 +130,8 @@ const is_update_when_save_external_data_initial_value:bool = true
 @onready var auto_pause_toggle_check_box:CheckBox = %AutoPauseToggleCheckBox
 @onready var debugger_enabled_toggle_button:Button = %DebuggerEnabledToggleButton
 @onready var framerate_label:Label = %FramerateLabel
+@onready var visible_only_check_box: CheckBox = %VisibleOnlyCheckBox
+
 @onready var print_rich_text_label: RichTextLabel = %PrintRichTextLabel
 var print_text:String = ""
 
@@ -270,6 +272,8 @@ func _ready():
 	debugger_enabled_toggle_button.add_theme_color_override(&"icon_pressed_color", Color.CORAL)
 	debugger_enabled_toggle_button.add_theme_color_override(&"icon_focus_color", Color.CORAL)
 	
+	visible_only_check_box.icon = _load_icon("GuiVisibilityVisible")
+	
 	var arrow_tex:=_load_icon("GuiTreeArrowDown")
 	arrow_tex.set_size_override(Vector2(24, 24))
 	
@@ -299,6 +303,8 @@ func _ready():
 		
 		auto_pause_toggle_check_box.text = "自動ポーズ"
 		auto_pause_toggle_check_box.tooltip_text = "LiveDebuggerをフォーカスしたときに\n自動的にゲームのSceneTreeをpausedにします"
+		
+		visible_only_check_box.tooltip_text = "表示されているノードのみを対象にする（is_visible_in_tree）"
 	elif _is_ko:
 		list_tree.set_column_title(0,"Node 이름")
 		list_tree.set_column_title(1,"속성 이름/메서드 이름")
@@ -312,7 +318,7 @@ func _ready():
 		
 		auto_pause_toggle_check_box.text = "자동 일시정지"
 		auto_pause_toggle_check_box.tooltip_text = "LiveDebugger를 포커스했을 때\n자동으로 게임의 SceneTree를 일시정지합니다"
-		
+		visible_only_check_box.tooltip_text = "표시되어 있는 노드만을 대상으로 (is_visible_in_tree)"
 	else:
 		list_tree.set_column_title(0,"Node Name")
 		list_tree.set_column_title(1,"Property/Function")
@@ -326,6 +332,7 @@ func _ready():
 
 		auto_pause_toggle_check_box.text = "Auto Pause"
 		auto_pause_toggle_check_box.tooltip_text = "Automatically pause the SceneTree of the game\nwhen LiveDebugger is focus_entered"
+		visible_only_check_box.tooltip_text = "Targeted only for is_visible_in_tree nodes"
 	
 	print_rich_text_label.custom_minimum_size.y = print_min_height
 	
@@ -402,7 +409,7 @@ func refresh():
 	var nodes := get_all_children(tree.root)
 	var index:int = 0
 	for n in nodes:
-		if _is_target_node(n):
+		if _is_target_node(n, true):
 			_target_nodes.append(n)
 			_add_list(n)
 			index+=1
@@ -444,6 +451,7 @@ func _update_node(n:Node, item:TreeItem):
 			_update_node(n, child_item)
 	else:
 		var d:Dictionary = item.get_metadata(1)
+		
 		# 他ノードプロパティの場合はget_pathする
 		if d.has("node_path"):
 			# キャッシュして毎フレームget_nodeを避ける
@@ -501,7 +509,7 @@ func _update_node(n:Node, item:TreeItem):
 			item.set_text(2, str(n.call(d.func)))
 
 static func print(s:Variant, title:String = ""):
-	if is_instance_valid(NodeLiveDebugger.debugger):
+	if is_instance_valid(NodeLiveDebugger.debugger) and is_instance_valid(NodeLiveDebugger.debugger.print_rich_text_label):
 		if title != "":
 			NodeLiveDebugger.debugger.print_rich_text_label.add_text("[" + title + "]" + str(s) + "\n")
 		else:
@@ -565,11 +573,23 @@ static func clear_print():
 #14. remaining built-in virtual methods
 #-----------------------------------------------------------
 func _on_node_added(n:Node):
-	if _is_target_node(n) and _target_nodes.find(n) == -1:
+	if n is CanvasItem or n is Node3D:
+		if not n.visibility_changed.is_connected(_on_node_visibility_changed):
+			n.visibility_changed.connect(_on_node_visibility_changed.bind(n))
+	__on_node_added(n)
+	
+func __on_node_added(n:Node):
+	if _is_target_node(n, true) and _target_nodes.find(n) == -1:
 		_target_nodes.append(n)
 		_add_list(n)
 
 func _on_node_removed(n:Node):
+	if n is CanvasItem or n is Node3D:
+		if n.visibility_changed.is_connected(_on_node_visibility_changed):
+			n.visibility_changed.disconnect(_on_node_visibility_changed)
+	__on_node_removed(n)
+	
+func __on_node_removed(n:Node):
 	if _is_target_node(n) and _target_nodes.find(n) != -1:
 		_target_nodes.erase(n)
 		
@@ -582,12 +602,24 @@ func _on_node_removed(n:Node):
 				_root_item.remove_child(item_n)
 				break
 
-func _is_target_node(n:Node) -> bool:
+func _on_node_visibility_changed(node:Node):
+	if node.is_visible_in_tree():
+		__on_node_added.bind(node).call_deferred()
+	else:
+		__on_node_removed.bind(node).call_deferred()
+
+func _is_target_node(n:Node,v_check:bool = false) -> bool:
 	var scr:Script = n.get_script()
 	if not scr: return false
 	if not scr.resource_path or scr.resource_path == "": return false
-	return _debug_path_mapping_dir.has(scr.resource_path)\
-	and (not _debug_node_dir.has(scr.resource_path) or _debug_node_dir[scr.resource_path].find(n.name) != -1)
+	if not _debug_path_mapping_dir.has(scr.resource_path): return false
+	
+	if v_check and visible_only_check_box.button_pressed:
+		if n is CanvasItem or n is Node3D:
+			if not n.is_visible_in_tree():
+				return false
+	
+	return (not _debug_node_dir.has(scr.resource_path) or _debug_node_dir[scr.resource_path].find(n.name) != -1)
 	# ノード名指定がないか、ノード名指定にノード名が含まれているなら対象にする
 
 
@@ -603,7 +635,7 @@ func _add_list(n:Node):
 	item_for_dir_root.set_tooltip_text(0,str(n.get_path()))
 	
 	if n is CanvasItem or n is Node3D:
-		if n.visible:
+		if n.is_visible_in_tree():
 			item_for_dir_root.add_button(0, _load_icon("GuiVisibilityVisible"))
 		else:
 			item_for_dir_root.add_button(0, _load_icon("GuiVisibilityHidden"))
@@ -1065,3 +1097,6 @@ func _on_changed_game_speed(speed:float):
 	Engine.time_scale = speed
 	speed_h_slider.set_value_no_signal(speed)
 	speed_spin_box.set_value_no_signal(speed)
+
+func _on_visible_only_check_box_toggled(toggled_on: bool) -> void:
+	refresh()
